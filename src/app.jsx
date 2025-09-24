@@ -131,11 +131,56 @@ const PANEL_GRAM_POS = [
   "Vancomycin"
 ];
 const PANEL_YEAST = ["Amphotericin B", "Fluconazole", "Voriconazole", "Flucytosine", "Caspofungin", "Micafungin"];
+const PANEL_GRAM_VAR = [
+  "Amikacin",
+  "Amoxicillin/ Clavulanic Acid",
+  "Ampicillin",
+  "Aztreonam",
+  "Benzylpenicillin",
+  "Cefalotin",
+  "Cefepime",
+  "Cefixime",
+  "Cefoperazone/ Sulbactam",
+  "Cefotaxime",
+  "Cefoxitin",
+  "Ceftazidime",
+  "Ceftriaxone",
+  "Cefuroxime",
+  "Cefuroxime Axetil",
+  "Chloramphenicol",
+  "Ciprofloxacin",
+  "Clindamycin",
+  "Colistin",
+  "Daptomycin",
+  "Ertapenem",
+  "Erythromycin",
+  "Fosfomycin",
+  "Gentamicin",
+  "Imipenem",
+  "Levofloxacin",
+  "Linezolid",
+  "Meropenem",
+  "Minocycline",
+  "Moxifloxacin",
+  "Nalidixic Acid",
+  "Nitrofurantoin",
+  "Norfloxacin",
+  "Ofloxacin",
+  "Oxacillin",
+  "Piperacillin/ Tazobactam",
+  "Rifampicin",
+  "Teicoplanin",
+  "Tetracycline",
+  "Ticarcillin",
+  "Tigecycline",
+  "Trimethoprim/ Sulfamethoxazole",
+  "Vancomycin"
+];
 
 function defaultPanel(gram){
   if(gram === "Gram-positive") return PANEL_GRAM_POS;
-  if(gram === "Gram-variable") return PANEL_GRAM_POS;
-  if(gram === "Yeast/Fungus" || gram === "Yeast") return PANEL_YEAST;
+  if(gram === "Gram-variable") return PANEL_GRAM_VAR;
+  if(gram === "Yeast/Fungus") return PANEL_YEAST;
   return PANEL_GRAM_NEG;
 }
 
