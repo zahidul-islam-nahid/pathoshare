@@ -178,9 +178,14 @@ const PANEL_GRAM_VAR = [
 ];
 
 function defaultPanel(gram){
-  if(gram === "Gram-positive") return PANEL_GRAM_POS;
-  if(gram === "Gram-variable") return PANEL_GRAM_VAR;
-  if(gram === "Yeast/Fungus") return PANEL_YEAST;
+  if(gram === "Gram positive coccus in cluster") return PANEL_GRAM_POS;
+  if(gram === "Gram positive short chain") return PANEL_GRAM_POS;
+  if(gram === "Gram positive rod") return PANEL_GRAM_POS;
+  if(gram === "Gram negative rod") return PANEL_GRAM_NEG;
+  if(gram === "Gram negative coccobacilli") return PANEL_GRAM_NEG;
+  if(gram === "Gram negative diplococci") return PANEL_GRAM_NEG;
+  if(gram === "Gram variable") return PANEL_GRAM_VAR;
+  if(gram === "Fungus") return PANEL_YEAST;
   return PANEL_GRAM_NEG;
 }
 
@@ -451,7 +456,7 @@ const NewReport = () => {
                         isolates[idx] = { ...isolates[idx], gram, ast: { panel: defaultPanel(gram), rows: makeRowsForGram(gram) } };
                         setReport({ ...report, lab: { ...report.lab, isolates } });
                       }}>
-                        {["Gram-negative","Gram-positive","Gram-variable","Yeast/Fungus"].map(g=> <option key={g}>{g}</option>)}
+                        {["Gram negative rod","Gram negative coccobacilli","Gram negative diplococci","Gram positive rod","Gram positive coccus in cluster","Gram positive short chain","Gram variable","Fungus"].map(g=> <option key={g}>{g}</option>)}
                       </select>
                     </FieldBlock>
                     <FieldBlock label="Organism name"><Input value={iso.species} onChange={e=>{
@@ -822,7 +827,7 @@ const ReportDetail = () => {
                 {["Pending","Negative","Positive"].map(s=> <option key={s}>{s}</option>)}
               </select>
             </FieldBlock>
-            <FieldBlock label="# Isolates"><Input type="number" value={report.lab.numIsolates} onChange={e=>updateAndSave(r=>{
+            <FieldBlock label="Isolate types"><Input type="number" value={report.lab.numIsolates} onChange={e=>updateAndSave(r=>{
               const num = Math.max(0, Number(e.target.value||0));
               const current = r.lab.isolates||[];
               let isolates = current.slice(0, num);
@@ -848,7 +853,7 @@ const ReportDetail = () => {
                     isolates[idx] = { ...isolates[idx], gram, ast: { panel: defaultPanel(gram), rows: makeRowsForGram(gram) } };
                     return { ...r, lab: { ...r.lab, isolates } };
                   })}>
-                    {["Gram-negative","Gram-positive","Yeast"].map(g=> <option key={g}>{g}</option>)}
+                    {["Gram negative rod","Gram negative coccobacilli","Gram negative diplococci","Gram positive rod","Gram positive coccus in cluster","Gram positive short chain","Gram variable","Fungus"].map(g=> <option key={g}>{g}</option>)}
                   </select>
                 </FieldBlock>
                 <FieldBlock label="Species"><Input value={iso.species} onChange={e=>updateAndSave(r=>{
