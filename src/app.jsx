@@ -32,20 +32,21 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 
 // ----------------- Local storage store -----------------
 const LS_KEY = "pathoshare_reports";
-async function loadReports(){
+async function loadReports(forceServer = false){
   const local = (()=>{ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"[]"); }catch{ return []; } })();
   try{
-    const res = await fetch('/api/reports');
+    const res = await fetch('/api/reports', { cache: 'no-store' });
     if(res.ok){
       const server = await res.json();
-      return Array.isArray(server) && server.length ? server : local;
+      return forceServer ? (Array.isArray(server) ? server : []) : (Array.isArray(server) && server.length ? server : local);
     }
   }catch{}
-  return local;
+  return forceServer ? [] : local;
 }
 async function createReport(report){
   try{ await fetch('/api/reports', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(report) }); }
   catch{}
+  // Maintain a local mirror for offline fallback
   const existing = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
   localStorage.setItem(LS_KEY, JSON.stringify([report, ...existing]))
 }
@@ -428,7 +429,17 @@ const NewReport = () => {
 const ReportsList = () => {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
-  useEffect(()=>{ loadReports().then(setReports).catch(()=>setReports([])); },[]);
+  useEffect(()=>{
+    loadReports(true).then(setReports).catch(()=>setReports([]));
+    const onFocus = ()=> loadReports(true).then(setReports).catch(()=>{});
+    const onVisibility = ()=>{ if(document.visibilityState==='visible') onFocus(); };
+    window.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('focus', onFocus);
+    return ()=>{
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('visibilitychange', onVisibility);
+    };
+  },[]);
   function download(filename, blob){
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -445,12 +456,14 @@ const ReportsList = () => {
     const headers = Object.keys(rows[0]);
     return [headers.join(','), ...rows.map(r=> headers.map(h=>esc(r[h])).join(','))].join('\n');
   }
-  function exportJson(){
-    const data = JSON.stringify(reports, null, 2);
+  async function exportJson(){
+    const fresh = await loadReports(true);
+    const data = JSON.stringify(fresh, null, 2);
     const ts = new Date().toISOString().replace(/[:.]/g, '-');
     download(`pathoshare_reports_${ts}.json`, new Blob([data], { type: 'application/json;charset=utf-8' }));
   }
-  function exportCsv(){
+  async function exportCsv(){
+    const reports = await loadReports(true);
     const reportRows = reports.map(r=>({
       id: r.id,
       createdAt: r.createdAt,
