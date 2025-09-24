@@ -76,18 +76,61 @@ const FIXED_PASS = "pathoshare123";
 
 // ----------------- AST Panels (VITEK-2 like) -----------------
 const PANEL_GRAM_NEG = [
-  "Amikacin", "Gentamicin", "Tobramycin", "Ciprofloxacin", "Levofloxacin",
-  "Piperacillin/Tazobactam", "Ceftriaxone", "Cefotaxime", "Ceftazidime", "Cefepime",
-  "Imipenem", "Meropenem", "Ertapenem", "Aztreonam", "Trimethoprim/Sulfamethoxazole",
-  "Tigecycline", "Colistin"
+  "Amikacin",
+  "Amoxicillin/ Clavulanic Acid",
+  "Ampicillin",
+  "Aztreonam",
+  "Cefalotin",
+  "Cefepime",
+  "Cefixime",
+  "Cefoperazone/ Sulbactam",
+  "Cefoxitin",
+  "Ceftazidime",
+  "Ceftriaxone",
+  "Cefuroxime",
+  "Cefuroxime Axetil",
+  "Ciprofloxacin",
+  "Colistin",
+  "Ertapenem",
+  "Fosfomycin",
+  "Gentamicin",
+  "Imipenem",
+  "Levofloxacin",
+  "Meropenem",
+  "Minocycline",
+  "Nalidixic Acid",
+  "Nitrofurantoin",
+  "Norfloxacin",
+  "Ofloxacin",
+  "Piperacillin/ Tazobactam",
+  "Ticarcillin",
+  "Tigecycline",
+  "Trimethoprim/ Sulfamethoxazole"
 ];
 const PANEL_GRAM_POS = [
-  "Penicillin", "Oxacillin/Cefoxitin (MRSA screen)", "Vancomycin", "Teicoplanin",
-  "Linezolid", "Daptomycin", "Clindamycin", "Erythromycin", "Tetracycline",
-  "Ciprofloxacin", "Levofloxacin", "Gentamicin (HLG)", "Streptomycin (HLS)",
-  "Trimethoprim/Sulfamethoxazole"
+  "Ampicillin",
+  "Benzylpenicillin",
+  "Cefotaxime",
+  "Ceftriaxone",
+  "Chloramphenicol",
+  "Ciprofloxacin",
+  "Clindamycin",
+  "Daptomycin",
+  "Erythromycin",
+  "Gentamicin",
+  "Levofloxacin",
+  "Linezolid",
+  "Moxifloxacin",
+  "Nitrofurantoin",
+  "Oxacillin",
+  "Rifampicin",
+  "Teicoplanin",
+  "Tetracycline",
+  "Tigecycline",
+  "Trimethoprim/ Sulfamethoxazole",
+  "Vancomycin"
 ];
-const PANEL_YEAST = ["Amphotericin B", "Fluconazole", "Voriconazole", "Posaconazole", "Caspofungin", "Micafungin"];
+const PANEL_YEAST = ["Amphotericin B", "Fluconazole", "Voriconazole", "Flucytosine", "Caspofungin", "Micafungin"];
 
 function defaultPanel(gram){
   if(gram === "Gram-positive") return PANEL_GRAM_POS;
@@ -348,7 +391,7 @@ const NewReport = () => {
                     {["Pending","Negative","Positive"].map(s=> <option key={s}>{s}</option>)}
                   </select>
                 </FieldBlock>
-                <FieldBlock label="Number of isolates"><Input type="number" min={0} value={report.lab.numIsolates} onChange={e=>setReport({...report, lab:{...report.lab, numIsolates: Math.max(0, Number(e.target.value||0))}})} /></FieldBlock>
+                <FieldBlock label="Isolate types"><Input type="number" min={0} value={report.lab.numIsolates} onChange={e=>setReport({...report, lab:{...report.lab, numIsolates: Math.max(0, Number(e.target.value||0))}})} /></FieldBlock>
               </div>
               <FieldBlock label="Comments"><Input value={report.lab.comments} onChange={e=>setReport({...report, lab:{...report.lab, comments:e.target.value}})} /></FieldBlock>
 
@@ -550,7 +593,7 @@ const ReportsList = () => {
             <TableRow>
               <TableHead>Patient ID</TableHead>
               <TableHead>Specimen</TableHead>
-              <TableHead>Collection time</TableHead>
+              <TableHead>Collection date</TableHead>
               <TableHead>Culture result</TableHead>
               <TableHead>Number of isolates</TableHead>
               <TableHead>Gram staining</TableHead>
