@@ -595,7 +595,7 @@ const ReportsList = () => {
               <TableHead>Specimen</TableHead>
               <TableHead>Collection date</TableHead>
               <TableHead>Culture result</TableHead>
-              <TableHead>Number of isolates</TableHead>
+              <TableHead>Isolate types</TableHead>
               <TableHead>Gram staining</TableHead>
               <TableHead>Species</TableHead>
               <TableHead></TableHead>
@@ -705,7 +705,7 @@ const ReportDetail = () => {
           <h3>Lab</h3>
           <p><strong>Received:</strong> ${report.lab.receivedDate||''}</p>
           <p><strong>Culture:</strong> ${report.lab.cultureResult}</p>
-          <p><strong>Number of Isolates:</strong> ${report.lab.numIsolates||0}</p>
+          <p><strong>Isolate types:</strong> ${report.lab.numIsolates||0}</p>
           <p><strong>Comments:</strong> ${report.lab.comments||''}</p>
         </div>
       </div>
