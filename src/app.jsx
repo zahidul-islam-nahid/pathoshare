@@ -250,7 +250,21 @@ const NavBar = () => (
 
 const Footer = () => (
   <footer className="border-t bg-gradient-to-br from-white to-slate-50">
-    <Container className="py-8 text-xs text-neutral-500">© {new Date().getFullYear()} PathoShare. For research purposes only.</Container>
+    <Container className="py-8 text-xs text-neutral-500 flex flex-wrap items-center gap-2">
+      <span>© {new Date().getFullYear()} PathoShare. For research purposes only.</span>
+      <span className="opacity-40">•</span>
+      <span>
+        Created by{" "}
+        <a
+          href="www.linkedin.com/in/zahidul-islam-nahid"           // <- put a real link (GitHub/LinkedIn/site) or use `mailto:you@email`
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-neutral-700"
+        >
+          Zahidul Islam
+        </a>
+      </span>
+    </Container>
   </footer>
 );
 
@@ -571,6 +585,19 @@ const ReportsList = () => {
       window.removeEventListener('visibilitychange', onVisibility);
     };
   },[]);
+  const [query, setQuery] = useState("");
+
+  const norm = (s) => (s || "").toString().toLowerCase().trim();
+
+  const filteredReports = useMemo(() => {
+    const q = norm(query);
+    if (!q) return reports;
+    return reports.filter((r) => {
+      const pid = norm(r?.patient?.patientId);
+      const name = norm(r?.patient?.name);
+      return pid.includes(q) || name.includes(q);
+    });
+  }, [reports, query]);
   function download(filename, blob){
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -665,20 +692,24 @@ const ReportsList = () => {
   return (
     <Section>
       <Container>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Reports</h2>
-          <div className="flex gap-2">
-            {getRole()==='editor' && (
-              <>
-                <Button variant="secondary" onClick={exportJson} className="rounded-2xl">Export JSON</Button>
-                <Button variant="secondary" onClick={exportCsv} className="rounded-2xl">Export CSV</Button>
-                <input ref={importRef} type="file" accept="application/json" onChange={onImportJson} className="hidden" id="importJson" />
-                <Button variant="secondary" onClick={()=>importRef.current?.click()} className="rounded-2xl">Import JSON</Button>
-                <Button onClick={()=>navigate('/reports/new')} className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button>
-              </>
-            )}
-          </div>
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Reports</h2>
+
+        {/* Right controls: keep your existing buttons; add search to the left of them */}
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search Patient ID or Name"
+            className="w-64 rounded-md border px-3 py-2 text-sm"
+            aria-label="Search"
+          />
+          {/* keep your existing buttons here (Export/Import/New etc.) */}
+          {/* ... */}
         </div>
+      </div>
+
         <Table>
           <TableHeader>
             <TableRow>
@@ -695,7 +726,7 @@ const ReportsList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {reports.map(r=> (
+            {filteredReports.map(r=> (
               <TableRow key={r?.id || Math.random()} className="hover:bg-neutral-50">
                 <TableCell className="font-medium">{r?.patient?.patientId || '—'}</TableCell>
                 <TableCell>{r?.patient?.name || '—'}</TableCell>
