@@ -819,7 +819,7 @@ const ReportDetail = () => {
         <div><strong>Principal Investigator:</strong> Mohammad Monir Hossain</div>
         <div><strong>Protocol No:</strong> PR-24111 &nbsp;&nbsp; <strong>ERC Approval Date:</strong> 3 February 2025</div>
       </div>
-    `; <!-- matches the top of your samples: negative, single, multiple.  -->
+    `;
   
     // Patient/Specimen block (Location & Phase intentionally omitted)
     const patientSpecimen = `
@@ -850,7 +850,7 @@ const ReportDetail = () => {
         <strong>Results:</strong><br/>
         No organism isolated in aerobic condition at 35±2°C.
       </p>
-    `; <!-- language identical to your negative sample.  -->
+    `;
   
     function isolateHeaderLine() {
       if (!positive || nIso === 0) return '';
@@ -926,7 +926,7 @@ const ReportDetail = () => {
         <em>*Disclaimer:</em><br/>
         This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
       </p>
-    `; <!-- matches line in your PDFs.  -->
+    `;
   
     const signatures = `
       <table style="width:100%; border-collapse:collapse; margin-top:16px; font-size:12px;">
@@ -959,7 +959,7 @@ const ReportDetail = () => {
           </td>
         </tr>
       </table>
-    `; <!-- names/roles align with your samples.  -->
+    `;
   
     // Put everything together
     const html = `<!doctype html>
