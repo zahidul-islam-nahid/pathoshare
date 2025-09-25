@@ -890,7 +890,7 @@ const ReportDetail = () => {
         return `
           <p style="font-size:12px; margin-top:12px;">
             <strong>Results:</strong><br/>
-            ${name ? `${name} ` : ''}isolated in aerobic condition at 35±2°C.
+            ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
           </p>
         `;
       }
@@ -899,7 +899,7 @@ const ReportDetail = () => {
       const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
       const lines = isolates.map((iso, i) => {
         const name = iso?.species || '';
-        return `${labels[i]}) ${name}`;
+        return `${labels[i]}) <i>${name}</i>`;
       }).filter(Boolean);
       return `
         <p style="font-size:12px; margin-top:12px;">
@@ -1012,8 +1012,6 @@ const ReportDetail = () => {
         </div>
   
         ${protocolBlock}
-  
-        <h1>Microbiology Report</h1>
   
         ${patientSpecimen}
   
