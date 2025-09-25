@@ -71,7 +71,7 @@ const ROLE_KEY = "pathoshare_role"; // 'editor' | 'viewer'
 function isAuthed(){ try{ return JSON.parse(sessionStorage.getItem(AUTH_KEY)||"false"); }catch{ return false; } }
 function setAuthed(v){ sessionStorage.setItem(AUTH_KEY, JSON.stringify(!!v)); }
 function setRole(role){ sessionStorage.setItem(ROLE_KEY, role); }
-function getRole(){ return sessionStorage.getItem(ROLE_KEY)||'viewer'; }
+function getRole(){ return sessionStorage.getItem(ROLE_KEY)||'editor'; }
 function clearAuth(){ try{ sessionStorage.removeItem(AUTH_KEY); sessionStorage.removeItem(ROLE_KEY); }catch{} }
 // Fixed credentials (change as needed)
 const FIXED_USER = "admin";
@@ -217,14 +217,12 @@ const NavBar = () => (
       </Link>
       <nav className="hidden items-center gap-6 text-sm md:flex">
         <Link to="/reports" className="text-black/70 hover:text-black">Reports</Link>
-        {isAuthed() && getRole()==='editor' && (
-          <Link to="/reports/new" className="text-black/70 hover:text-black">New Report</Link>
-        )}
+        {getRole()==='editor' && (<Link to="/reports/new" className="text-black/70 hover:text-black">New Report</Link>)}
         <Link to="/summary" className="text-black/70 hover:text-black">Summary</Link>
         <Link to="/docs" className="text-black/70 hover:text-black">User Manual</Link>
       </nav>
       <div className="flex items-center gap-2">
-        {isAuthed() && getRole()==='editor' && (<Link to="/reports/new"><Button size="sm" className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button></Link>)}
+        {getRole()==='editor' && (<Link to="/reports/new"><Button size="sm" className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button></Link>)}
         <Button size="sm" variant="secondary" className="rounded-2xl" onClick={()=>{ clearAuth(); window.location.href='/login'; }}>Logout</Button>
       </div>
     </Container>
@@ -254,7 +252,7 @@ const Footer = () => (
             <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Culture & AST report sharing</h1>
             <p className="mt-4 text-lg text-neutral-700">Field team register patients information, lab team complete culture, gram-stain, species and AST. Generate a clean PDF and view live summary stats.</p>
             <div className="mt-6 flex gap-3">
-              {getRole()==='editor' && <Button className="rounded-2xl" onClick={()=>navigate('/reports/new')}>Create report <ArrowRight className="ml-2 size-4"/></Button>}
+              <Button className="rounded-2xl" onClick={()=>navigate('/reports/new')}>Create report <ArrowRight className="ml-2 size-4"/></Button>
               <Button variant="secondary" className="rounded-2xl" onClick={()=>navigate('/reports')}>View reports</Button>
             </div>
           </motion.div>
@@ -1004,7 +1002,7 @@ export default function App(){
         <Route path="/login" element={<Login/>} />
         <Route path="/" element={<RequireAuth><Home/></RequireAuth>} />
         <Route path="/reports" element={<RequireAuth><ReportsList/></RequireAuth>} />
-        <Route path="/reports/new" element={<RequireAuth> {getRole()==='editor' ? <NewReport/> : <Navigate to="/reports" replace/>}</RequireAuth>} />
+        <Route path="/reports/new" element={<RequireAuth><NewReport/></RequireAuth>} />
         <Route path="/reports/:id" element={<RequireAuth><ReportDetail/></RequireAuth>} />
         <Route path="/summary" element={<RequireAuth><Summary/></RequireAuth>} />
         <Route path="/docs" element={<RequireAuth><UserManual/></RequireAuth>} />
