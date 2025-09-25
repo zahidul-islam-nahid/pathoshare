@@ -863,7 +863,7 @@ const ReportDetail = () => {
             </tr>
             <tr>
                 <td style="vertical-align:top; border:1px solid #ddd; padding:8px;">
-                    <div><strong>Patient’s Name:</strong> ${report?.patient?.name || ''}</div>
+                    <div><strong>Patient's Name:</strong> ${report?.patient?.name || ''}</div>
                     <div><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
                     <div><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
                     <div><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
@@ -988,96 +988,134 @@ const ReportDetail = () => {
         </table>
     `;
 
-    const footer = `
-        <div class="footer">
-            <div class="protocolNo">
-                <strong>Protocol No:</strong> PR-24111
-            </div>
-            <div class="protocolERCApr">
-                <strong>ERC Approval Date:</strong> 3 February 2025
-            </div>
-            <div class="disclaimer">
-                <em>*Disclaimer:</em><br/>
-                This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
-            </div>
-            <div class="signatures">
-                ${signatures}
-            </div>
-        </div>
-    `;
-
     const html = `<!doctype html>
     <html>
         <head>
             <meta charset="utf-8">
             <style>
+                @page {
+                    size: A4;
+                    margin: 20mm 20mm 30mm 20mm; /* top right bottom left - extra bottom margin for protocol info */
+                    @top-left {
+                        content: url("${headerLeftLogo}");
+                        width: 52px;
+                        height: 52px;
+                    }
+                    @top-right {
+                        content: url("${headerRightLogo}");
+                        width: 52px;
+                        height: 52px;
+                    }
+                    @top-center {
+                        content: "Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance\\A Principal Investigator: Mohammad Monir Hossain";
+                        font-size: 11px;
+                        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+                        text-align: center;
+                        line-height: 1.3;
+                        padding: 0 20px;
+                        white-space: pre-line;
+                    }
+                    @bottom-left {
+                        content: "Protocol No: PR-24111";
+                        font-size: 10px;
+                        font-weight: 600;
+                        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+                    }
+                    @bottom-right {
+                        content: "ERC Approval Date: 3 February 2025";
+                        font-size: 10px;
+                        font-weight: 600;
+                        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+                    }
+                }
+                
                 body {
                     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
-                    padding: 20px;
                     color: #111;
-                    position: relative;
-                    min-height: 100vh;
-                }
-                .hdr {
+                    margin: 0;
+                    padding: 20px;
+                    padding-top: 80px; /* Space for page header */
+                    padding-bottom: 40px; /* Space for page footer */
+                    line-height: 1.4;
                     display: flex;
-                    align-items: center;
-                    justify-content: space-between;
+                    flex-direction: column;
+                    min-height: calc(100vh - 120px); /* Account for header and footer */
                 }
-                .hdr img {
-                    height: 52px;
+                
+                .main-content {
+                    flex: 1;
                 }
+                
+                /* Hide the original header and protocol block since they're now in page margins */
+                .hdr {
+                    display: none;
+                }
+                
+                .protocol-block {
+                    display: none;
+                }
+                
                 .section-title {
                     font-size: 14px;
                     font-weight: 600;
                     margin-top: 12px;
                 }
-                .footer {
-                    position: fixed;
-                    bottom: 0;
-                    width: 100%;
-                    padding: 10px 0;
-                    text-align: center;
+                
+                .footer-section {
+                    margin-top: auto;
+                    padding-top: 30px;
+                    page-break-inside: avoid;
                 }
-                .protocolNo {
-                    position: absolute;
-                    bottom: 40px;
-                    left: 10px;
-                }
-                .protocolERCApr {
-                    position: absolute;
-                    bottom: 40px;
-                    right: 10px;
-                }
-                .footer .disclaimer,
-                .footer .signatures {
-                    margin-top: 20px;
-                }
+                
                 @media print {
-                    .footer {
-                        position: absolute;
-                        bottom: 10px;
+                    body {
+                        margin: 0;
+                        padding: 20px;
+                        padding-top: 80px; /* Space for page header */
+                        padding-bottom: 40px; /* Space for page footer */
+                        min-height: calc(100vh - 120px);
                     }
-                    .protocolNo, .protocolERCApr {
-                        position: absolute;
-                        bottom: 10px;
+                    
+                    .hdr {
+                        display: none;
                     }
-                    .footer .disclaimer,
-                    .footer .signatures {
-                        page-break-before: always;
+                    
+                    .protocol-block {
+                        display: none;
+                    }
+                    
+                    .footer-section {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+                    
+                    .signatures-section {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
                     }
                 }
             </style>
         </head>
         <body>
-            <div class="hdr">
-                <img src="${headerLeftLogo}" alt="icddr,b logo"/>
-                <img src="${headerRightLogo}" alt="Shishu logo"/>
+            <div class="main-content">
+                <div class="hdr">
+                    <img src="${headerLeftLogo}" alt="icddr,b logo"/>
+                    <img src="${headerRightLogo}" alt="Shishu logo"/>
+                </div>
+                <div class="protocol-block">
+                    ${protocolBlock}
+                </div>
+                ${patientSpecimen}
+                ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
+                ${mode !== 'neg' ? antibiogramTables() : ''}
             </div>
-            ${protocolBlock}
-            ${patientSpecimen}
-            ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
-            ${mode !== 'neg' ? antibiogramTables() : ''}
-            ${footer}
+            
+            <div class="footer-section">
+                ${disclaimer}
+                <div class="signatures-section">
+                    ${signatures}
+                </div>
+            </div>
         </body>
     </html>`;
 
