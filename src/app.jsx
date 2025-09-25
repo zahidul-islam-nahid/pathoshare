@@ -463,7 +463,7 @@ const NewReport = () => {
                   <div className="grid grid-cols-2 gap-2">
                     <Input type="number" value={report.patient.age} onChange={e=>setReport({...report, patient:{...report.patient, age:e.target.value}})} />
                     <select className="w-full rounded-md border px-3 py-2" value={report.patient.ageUnit||'year'} onChange={e=>setReport({...report, patient:{...report.patient, ageUnit:e.target.value}})}>
-                      {['hour','day','week','month','year'].map(u=> <option key={u} value={u}>{u}</option>)}
+                      {['hour(s)','day(s)','week(s)','month(s)','year(s)'].map(u=> <option key={u} value={u}>{u}</option>)}
                     </select>
                   </div>
                 </FieldBlock>
@@ -1066,7 +1066,7 @@ const ReportDetail = () => {
               <div className="grid grid-cols-2 gap-2">
                 <Input disabled={getRole()==='viewer'} type="number" value={report.patient.age} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, age:e.target.value}}))} />
                 <select disabled={getRole()==='viewer'} className="w-full rounded-md border px-3 py-2" value={report.patient.ageUnit||'year'} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, ageUnit:e.target.value}}))}>
-                  {['hour','day','week','month','year'].map(u=> <option key={u} value={u}>{u}</option>)}
+                  {['hour(s)','day(s)','week(s)','month(s)','year(s)'].map(u=> <option key={u} value={u}>{u}</option>)}
                 </select>
               </div>
             </FieldBlock>
