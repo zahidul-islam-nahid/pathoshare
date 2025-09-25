@@ -780,7 +780,7 @@ function openPrintable(html){
   if (!w) return;
 
   w.document.open();
-  w.document.documentElement.innerHTML = html;
+  w.document.write(html);
   w.document.close();
 
   // Wait for the new document AND all <img> elements to load
@@ -855,10 +855,15 @@ const ReportDetail = () => {
         </div>
     `;
 
-    const protocolERCApr = `
+    const protocolNo = `
         <div style="font-size:13px; line-height:1.5; position: absolute; bottom: 40px; left: 10px;">
-            <div><strong>Protocol No:</strong> PR-24111 &nbsp;&nbsp; <strong>ERC Approval Date:</strong> 3 February 2025</div>
+            <div><strong>Protocol No:</strong> PR-24111</div>
         </div>
+    `;
+    const protocolERCApr = `
+    <div style="font-size:13px; line-height:1.5; position: absolute; bottom: 40px; right: 10px;">
+        <div><strong>ERC Approval Date:</strong> 3 February 2025</div>
+    </div>
     `;
 
     const patientSpecimen = `
@@ -1022,6 +1027,7 @@ const ReportDetail = () => {
             <div class="footer">
                 ${disclaimer}
                 ${signatures}
+                ${protocolNo}
                 ${protocolERCApr}
             </div>
         </body>
