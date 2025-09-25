@@ -392,6 +392,7 @@ function emptyReport(){
     },
     lab: {
       receivedDate:"",
+      finalReportDate:"",
       cultureResult:"Pending",
       numIsolates: 1,
       isolates: [
@@ -500,6 +501,7 @@ const NewReport = () => {
                 </FieldBlock>
                 <FieldBlock label="Isolate types"><Input type="number" min={0} value={report.lab.numIsolates} onChange={e=>setReport({...report, lab:{...report.lab, numIsolates: Math.max(0, Number(e.target.value||0))}})} /></FieldBlock>
               </div>
+              <FieldBlock label="Final reporting date"><Input type="date" value={report.lab.finalReportDate||''} onChange={e=>setReport({...report, lab:{...report.lab, finalReportDate:e.target.value}})} /></FieldBlock>
 
               {report.lab.isolates?.map((iso, idx)=> (
                 <div key={idx} className="rounded-xl border p-3">
@@ -638,6 +640,7 @@ const ReportsList = () => {
       cultureResult: r.lab?.cultureResult||'',
       numIsolates: r.lab?.numIsolates ?? (Array.isArray(r.lab?.isolates)? r.lab.isolates.length : 0),
       receivedDate: r.lab?.receivedDate||'',
+      finalReportDate: r.lab?.finalReportDate||'',
     }));
     const isolateRows = reports.flatMap(r=> (Array.isArray(r.lab?.isolates)? r.lab.isolates: []).map((iso,idx)=>({
       reportId: r.id,
@@ -828,7 +831,9 @@ const ReportDetail = () => {
   }
 
   function exportPDF(){
-    const reportingDate = new Date().toLocaleDateString(); // export time = Reporting Date
+    const reportingDate = (report?.lab?.finalReportDate && String(report.lab.finalReportDate).trim())
+      ? new Date(report.lab.finalReportDate).toLocaleDateString()
+      : new Date().toLocaleDateString();
     const culture = report?.lab?.cultureResult || 'Pending';
     const isolates = Array.isArray(report?.lab?.isolates) ? report.lab.isolates : [];
     const positive = culture === 'Positive';
@@ -1102,6 +1107,7 @@ const ReportDetail = () => {
               }
               return { ...r, lab: { ...r.lab, numIsolates: num, isolates } };
             })} /></FieldBlock>
+            <FieldBlock label="Final reporting date"><Input disabled={getRole()==='viewer'} type="date" value={report.lab.finalReportDate||''} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, finalReportDate:e.target.value}}))} /></FieldBlock>
             </CardContent>
         </Card>
 
