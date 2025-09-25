@@ -838,13 +838,13 @@ const ReportDetail = () => {
         <Card className="rounded-2xl mb-6">
           <CardHeader><CardTitle>Lab</CardTitle></CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-3">
-            <FieldBlock label="Received date"><Input type="date" value={report.lab.receivedDate} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, receivedDate:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Received date"><Input disabled={getRole()==='viewer'} type="date" value={report.lab.receivedDate} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, receivedDate:e.target.value}}))} /></FieldBlock>
             <FieldBlock label="Culture">
               <select className="w-full rounded-md border px-3 py-2" value={report.lab.cultureResult} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, cultureResult:e.target.value}}))}>
                 {["Pending","Negative","Positive"].map(s=> <option key={s}>{s}</option>)}
               </select>
             </FieldBlock>
-            <FieldBlock label="Isolate types"><Input type="number" value={report.lab.numIsolates} onChange={e=>updateAndSave(r=>{
+            <FieldBlock label="Isolate types"><Input disabled={getRole()==='viewer'} type="number" value={report.lab.numIsolates} onChange={e=>updateAndSave(r=>{
               const num = Math.max(0, Number(e.target.value||0));
               const current = r.lab.isolates||[];
               let isolates = current.slice(0, num);
@@ -854,7 +854,7 @@ const ReportDetail = () => {
               }
               return { ...r, lab: { ...r.lab, numIsolates: num, isolates } };
             })} /></FieldBlock>
-            <FieldBlock label="Comments"><Input value={report.lab.comments} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, comments:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Comments"><Input disabled={getRole()==='viewer'} value={report.lab.comments} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, comments:e.target.value}}))} /></FieldBlock>
           </CardContent>
         </Card>
 
@@ -864,7 +864,7 @@ const ReportDetail = () => {
             <CardContent className="grid gap-4">
               <div className="grid md:grid-cols-3 gap-3">
                 <FieldBlock label="Gram">
-                  <select className="w-full rounded-md border px-3 py-2" value={iso.gram} onChange={e=>updateAndSave(r=>{
+                  <select disabled={getRole()==='viewer'} className="w-full rounded-md border px-3 py-2" value={iso.gram} onChange={e=>updateAndSave(r=>{
                     const isolates=[...(r.lab.isolates||[])];
                     const gram = e.target.value;
                     isolates[idx] = { ...isolates[idx], gram, ast: { panel: defaultPanel(gram), rows: makeRowsForGram(gram) } };
@@ -873,7 +873,7 @@ const ReportDetail = () => {
                     {["Gram negative rod","Gram negative coccobacilli","Gram negative diplococci","Gram positive rod","Gram positive coccus in cluster","Gram positive short chain","Gram variable","Fungus"].map(g=> <option key={g}>{g}</option>)}
                   </select>
                 </FieldBlock>
-                <FieldBlock label="Species"><Input value={iso.species} onChange={e=>updateAndSave(r=>{
+                <FieldBlock label="Species"><Input disabled={getRole()==='viewer'} value={iso.species} onChange={e=>updateAndSave(r=>{
                   const isolates=[...(r.lab.isolates||[])]; isolates[idx] = { ...isolates[idx], species: e.target.value }; return { ...r, lab: { ...r.lab, isolates } };
                 })} /></FieldBlock>
               </div>
@@ -890,7 +890,7 @@ const ReportDetail = () => {
                     <TableRow key={row.antibiotic}>
                       <TableCell className="font-medium">{row.antibiotic}</TableCell>
                       <TableCell>
-                        <select className="w-full rounded-md border px-3 py-2" value={row.sir} onChange={e=>updateAndSave(r=>{
+                        <select disabled={getRole()==='viewer'} className="w-full rounded-md border px-3 py-2" value={row.sir} onChange={e=>updateAndSave(r=>{
                           const isolates=[...(r.lab.isolates||[])];
                           const rows=[...(isolates[idx].ast?.rows||[])];
                           rows[rIdx] = { ...rows[rIdx], sir: e.target.value };
@@ -904,7 +904,7 @@ const ReportDetail = () => {
                         </select>
                       </TableCell>
                       <TableCell>
-                        <Input value={row.mic} placeholder="e.g., 0.25" onChange={e=>updateAndSave(r=>{
+                        <Input disabled={getRole()==='viewer'} value={row.mic} placeholder="e.g., 0.25" onChange={e=>updateAndSave(r=>{
                           const isolates=[...(r.lab.isolates||[])];
                           const rows=[...(isolates[idx].ast?.rows||[])];
                           rows[rIdx] = { ...rows[rIdx], mic: e.target.value };
