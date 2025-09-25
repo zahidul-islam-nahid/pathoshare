@@ -251,12 +251,11 @@ const NavBar = () => (
 const Footer = () => (
   <footer className="border-t bg-gradient-to-br from-white to-slate-50">
     <Container className="py-8 text-xs text-neutral-500 flex flex-wrap items-center gap-2">
-      <span>© {new Date().getFullYear()} PathoShare. For research purposes only.</span>
-      <span className="opacity-40">•</span>
       <span>
+        © {new Date().getFullYear()} PathoShare. For research purposes only. 
         Created by{" "}
         <a
-          href="www.linkedin.com/in/zahidul-islam-nahid"           // <- put a real link (GitHub/LinkedIn/site) or use `mailto:you@email`
+          href="https://www.linkedin.com/in/zahidul-islam-nahid/"   // 👉 replace with GitHub, LinkedIn, or mailto
           target="_blank"
           rel="noopener noreferrer"
           className="underline underline-offset-2 hover:text-neutral-700"
@@ -267,6 +266,7 @@ const Footer = () => (
     </Container>
   </footer>
 );
+
 
 // ----------------- Home -----------------
  const Home = () => {
