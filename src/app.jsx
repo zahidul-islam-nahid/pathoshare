@@ -217,12 +217,12 @@ const NavBar = () => (
       </Link>
       <nav className="hidden items-center gap-6 text-sm md:flex">
         <Link to="/reports" className="text-black/70 hover:text-black">Reports</Link>
-        <Link to="/reports/new" className="text-black/70 hover:text-black">New Report</Link>
+        {getRole()==='editor' && (<Link to="/reports/new" className="text-black/70 hover:text-black">New Report</Link>)}
         <Link to="/summary" className="text-black/70 hover:text-black">Summary</Link>
         <Link to="/docs" className="text-black/70 hover:text-black">User Manual</Link>
       </nav>
       <div className="flex items-center gap-2">
-        <Link to="/reports/new"><Button size="sm" className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button></Link>
+        {getRole()==='editor' && (<Link to="/reports/new"><Button size="sm" className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button></Link>)}
         <Button size="sm" variant="secondary" className="rounded-2xl" onClick={()=>{ clearAuth(); window.location.href='/login'; }}>Logout</Button>
       </div>
     </Container>
@@ -338,7 +338,7 @@ function emptyReport(){
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
     patient: {
-      patientId:"", name:"", age:"", ageUnit:"year", sex:"", facility:"", specimenType:"Blood", collectionDate:"", notes:"",
+      patientId:"", name:"", age:"", ageUnit:"year", sex:"", specimenType:"Blood", collectionDate:"", notes:"",
     },
     lab: {
       receivedDate:"",
@@ -428,7 +428,6 @@ const NewReport = () => {
                 </FieldBlock>
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <FieldBlock label="Facility"><Input value={report.patient.facility} onChange={e=>setReport({...report, patient:{...report.patient, facility:e.target.value}})} /></FieldBlock>
                 <FieldBlock label="Specimen type">
                   <select className="w-full rounded-md border px-3 py-2" value={report.patient.specimenType} onChange={e=>setReport({...report, patient:{...report.patient, specimenType:e.target.value}})}>
                     {['Blood','EDTA Blood','Serum','Urine','Vaginal swab','Other'].map(s=> <option key={s} value={s}>{s}</option>)}
@@ -573,7 +572,6 @@ const ReportsList = () => {
       name: r.patient?.name||'',
       age: r.patient?.age||'',
       sex: r.patient?.sex||'',
-      facility: r.patient?.facility||'',
       specimenType: r.patient?.specimenType||'',
       collectionDate: r.patient?.collectionDate||'',
       cultureResult: r.lab?.cultureResult||'',
@@ -766,7 +764,6 @@ const ReportDetail = () => {
           <p><strong>ID:</strong> ${report.patient.patientId||''}</p>
           <p><strong>Name:</strong> ${report.patient.name||''}</p>
            <p><strong>Age/Sex:</strong> ${report.patient.age||''} ${report.patient.ageUnit||''} / ${report.patient.sex||''}</p>
-          <p><strong>Facility:</strong> ${report.patient.facility||''}</p>
           <p><strong>Specimen:</strong> ${report.patient.specimenType||''}</p>
           <p><strong>Collected:</strong> ${report.patient.collectionDate||''}</p>
         </div>
@@ -833,7 +830,6 @@ const ReportDetail = () => {
                 <option>Other</option>
               </select>
             </FieldBlock>
-            <FieldBlock label="Facility"><Input disabled={getRole()==='viewer'} value={report.patient.facility} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, facility:e.target.value}}))} /></FieldBlock>
             <FieldBlock label="Specimen"><Input disabled={getRole()==='viewer'} value={report.patient.specimenType} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, specimenType:e.target.value}}))} /></FieldBlock>
             <FieldBlock label="Collection date"><Input disabled={getRole()==='viewer'} type="date" value={report.patient.collectionDate} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, collectionDate:e.target.value}}))} /></FieldBlock>
           </CardContent>
