@@ -855,17 +855,6 @@ const ReportDetail = () => {
         </div>
     `;
 
-    const protocolNo = `
-        <div style="font-size:13px; line-height:1.5; position: absolute; bottom: 40px; left: 10px;">
-            <div><strong>Protocol No:</strong> PR-24111</div>
-        </div>
-    `;
-    const protocolERCApr = `
-    <div style="font-size:13px; line-height:1.5; position: absolute; bottom: 40px; right: 10px;">
-        <div><strong>ERC Approval Date:</strong> 3 February 2025</div>
-    </div>
-    `;
-
     const patientSpecimen = `
         <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
             <tr>
@@ -999,18 +988,84 @@ const ReportDetail = () => {
         </table>
     `;
 
+    const footer = `
+        <div class="footer">
+            <div class="protocolNo">
+                <strong>Protocol No:</strong> PR-24111
+            </div>
+            <div class="protocolERCApr">
+                <strong>ERC Approval Date:</strong> 3 February 2025
+            </div>
+            <div class="disclaimer">
+                <em>*Disclaimer:</em><br/>
+                This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
+            </div>
+            <div class="signatures">
+                ${signatures}
+            </div>
+        </div>
+    `;
+
     const html = `<!doctype html>
     <html>
         <head>
             <meta charset="utf-8">
             <style>
-                body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; padding: 20px; color: #111; position: relative; }
-                .hdr { display:flex; align-items:center; justify-content:space-between; }
-                .hdr img { height: 52px; }
-                h1 { font-size: 18px; margin: 8px 0 0 0; }
-                .section-title { font-size: 14px; font-weight: 600; margin-top: 12px; }
-                .protocol-erc { position: absolute; bottom: 40px; left: 10px; }
-                .footer { position: absolute; bottom: 10px; width: 100%; }
+                body {
+                    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+                    padding: 20px;
+                    color: #111;
+                    position: relative;
+                    min-height: 100vh;
+                }
+                .hdr {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+                .hdr img {
+                    height: 52px;
+                }
+                .section-title {
+                    font-size: 14px;
+                    font-weight: 600;
+                    margin-top: 12px;
+                }
+                .footer {
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                    padding: 10px 0;
+                    text-align: center;
+                }
+                .protocolNo {
+                    position: absolute;
+                    bottom: 40px;
+                    left: 10px;
+                }
+                .protocolERCApr {
+                    position: absolute;
+                    bottom: 40px;
+                    right: 10px;
+                }
+                .footer .disclaimer,
+                .footer .signatures {
+                    margin-top: 20px;
+                }
+                @media print {
+                    .footer {
+                        position: absolute;
+                        bottom: 10px;
+                    }
+                    .protocolNo, .protocolERCApr {
+                        position: absolute;
+                        bottom: 10px;
+                    }
+                    .footer .disclaimer,
+                    .footer .signatures {
+                        page-break-before: always;
+                    }
+                }
             </style>
         </head>
         <body>
@@ -1018,23 +1073,17 @@ const ReportDetail = () => {
                 <img src="${headerLeftLogo}" alt="icddr,b logo"/>
                 <img src="${headerRightLogo}" alt="Shishu logo"/>
             </div>
-
             ${protocolBlock}
             ${patientSpecimen}
             ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
             ${mode !== 'neg' ? antibiogramTables() : ''}
-
-            <div class="footer">
-                ${disclaimer}
-                ${signatures}
-                ${protocolNo}
-                ${protocolERCApr}
-            </div>
+            ${footer}
         </body>
     </html>`;
 
     openPrintable(html);
 }
+
   
   function updateAndSave(updater){
     const updated = updater(report);
