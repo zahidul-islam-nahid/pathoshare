@@ -67,12 +67,17 @@ async function deleteReport(id){
 
 // ----------------- Auth (session only) -----------------
 const AUTH_KEY = "pathoshare_auth";
+const ROLE_KEY = "pathoshare_role"; // 'editor' | 'viewer'
 function isAuthed(){ try{ return JSON.parse(sessionStorage.getItem(AUTH_KEY)||"false"); }catch{ return false; } }
 function setAuthed(v){ sessionStorage.setItem(AUTH_KEY, JSON.stringify(!!v)); }
-function clearAuth(){ try{ sessionStorage.removeItem(AUTH_KEY); }catch{} }
+function setRole(role){ sessionStorage.setItem(ROLE_KEY, role); }
+function getRole(){ return sessionStorage.getItem(ROLE_KEY)||'editor'; }
+function clearAuth(){ try{ sessionStorage.removeItem(AUTH_KEY); sessionStorage.removeItem(ROLE_KEY); }catch{} }
 // Fixed credentials (change as needed)
 const FIXED_USER = "admin";
 const FIXED_PASS = "pathoshare123";
+const VIEW_USER = "viewer";
+const VIEW_PASS = "pathoview";
 
 // ----------------- AST Panels (VITEK-2 like) -----------------
 const PANEL_GRAM_NEG = [
@@ -243,7 +248,7 @@ const Footer = () => (
       <Container>
         <Section className="grid items-center gap-10 md:grid-cols-2">
           <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{duration:0.5}}>
-            <Pill>Microbiol Etiolgy</Pill>
+            <Pill>Microbial Etiology</Pill>
             <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Culture & AST report sharing</h1>
             <p className="mt-4 text-lg text-neutral-700">Field team register patients information, lab team complete culture, gram-stain, species and AST. Generate a clean PDF and view live summary stats.</p>
             <div className="mt-6 flex gap-3">
@@ -293,9 +298,13 @@ function Login(){
   function submit(e){
     e.preventDefault();
     if(!username || !password){ setError("Enter username and password"); return; }
-    if(username !== FIXED_USER || password !== FIXED_PASS){ setError("Invalid credentials"); return; }
-    setAuthed(true);
-    navigate(from, { replace: true });
+    if(username === FIXED_USER && password === FIXED_PASS){
+      setAuthed(true); setRole('editor'); navigate(from, { replace: true }); return;
+    }
+    if(username === VIEW_USER && password === VIEW_PASS){
+      setAuthed(true); setRole('viewer'); navigate(from, { replace: true }); return;
+    }
+    setError("Invalid credentials");
   }
   return (
     <Section>
@@ -631,17 +640,23 @@ const ReportsList = () => {
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Reports</h2>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={exportJson} className="rounded-2xl">Export JSON</Button>
-            <Button variant="secondary" onClick={exportCsv} className="rounded-2xl">Export CSV</Button>
-            <input ref={importRef} type="file" accept="application/json" onChange={onImportJson} className="hidden" id="importJson" />
-            <Button variant="secondary" onClick={()=>importRef.current?.click()} className="rounded-2xl">Import JSON</Button>
-            <Button onClick={()=>navigate('/reports/new')} className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button>
+            {getRole()==='editor' && (
+              <>
+                <Button variant="secondary" onClick={exportJson} className="rounded-2xl">Export JSON</Button>
+                <Button variant="secondary" onClick={exportCsv} className="rounded-2xl">Export CSV</Button>
+                <input ref={importRef} type="file" accept="application/json" onChange={onImportJson} className="hidden" id="importJson" />
+                <Button variant="secondary" onClick={()=>importRef.current?.click()} className="rounded-2xl">Import JSON</Button>
+                <Button onClick={()=>navigate('/reports/new')} className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button>
+              </>
+            )}
           </div>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Patient ID</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Age</TableHead>
               <TableHead>Specimen</TableHead>
               <TableHead>Collection date</TableHead>
               <TableHead>Culture result</TableHead>
@@ -655,6 +670,8 @@ const ReportsList = () => {
             {reports.map(r=> (
               <TableRow key={r?.id || Math.random()} className="hover:bg-neutral-50">
                 <TableCell className="font-medium">{r?.patient?.patientId || '—'}</TableCell>
+                <TableCell>{r?.patient?.name || '—'}</TableCell>
+                <TableCell>{r?.patient?.age ? `${r?.patient?.age} ${r?.patient?.ageUnit||''}` : '—'}</TableCell>
                 <TableCell>{r?.patient?.specimenType || '—'}</TableCell>
                 <TableCell>{r?.patient?.collectionDate || '—'}</TableCell>
                 <TableCell>{r?.lab?.cultureResult || '—'}</TableCell>
@@ -664,11 +681,13 @@ const ReportsList = () => {
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button size="sm" variant="secondary" onClick={()=>navigate(`/reports/${r?.id}`)}>Open</Button>
+                    {getRole()==='editor' && (
                     <Button size="sm" onClick={()=>{
                       const ok = confirm('Delete this report?');
                       if(!ok) return;
                       deleteReport(r?.id).then(()=> loadReports().then(setReports));
                     }}>Delete</Button>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
@@ -782,11 +801,13 @@ const ReportDetail = () => {
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={()=>exportPDF()} className="rounded-2xl"><FileDown className="mr-2 size-4"/>Export PDF</Button>
+            {getRole()==='editor' && (
             <Button variant="secondary" onClick={()=>{
                const ok = confirm('Delete this report?');
                if(!ok) return;
                deleteReport(report.id).then(()=> navigate('/reports'));
              }} className="rounded-2xl">Delete</Button>
+            )}
             <Button onClick={async ()=>{ try{ await pendingSaveRef.current; }finally{ navigate('/reports'); } }} className="rounded-2xl">Close</Button>
           </div>
         </div>
@@ -794,27 +815,27 @@ const ReportDetail = () => {
         <Card className="rounded-2xl mb-6">
           <CardHeader><CardTitle>Patient</CardTitle></CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-3">
-            <FieldBlock label="Patient ID"><Input value={report.patient.patientId} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, patientId:e.target.value}}))} /></FieldBlock>
-            <FieldBlock label="Name"><Input value={report.patient.name} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, name:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Patient ID"><Input disabled={getRole()==='viewer'} value={report.patient.patientId} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, patientId:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Name"><Input disabled={getRole()==='viewer'} value={report.patient.name} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, name:e.target.value}}))} /></FieldBlock>
             <FieldBlock label="Age">
               <div className="grid grid-cols-2 gap-2">
-                <Input type="number" value={report.patient.age} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, age:e.target.value}}))} />
-                <select className="w-full rounded-md border px-3 py-2" value={report.patient.ageUnit||'year'} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, ageUnit:e.target.value}}))}>
+                <Input disabled={getRole()==='viewer'} type="number" value={report.patient.age} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, age:e.target.value}}))} />
+                <select disabled={getRole()==='viewer'} className="w-full rounded-md border px-3 py-2" value={report.patient.ageUnit||'year'} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, ageUnit:e.target.value}}))}>
                   {['hour','day','week','month','year'].map(u=> <option key={u} value={u}>{u}</option>)}
                 </select>
               </div>
             </FieldBlock>
             <FieldBlock label="Sex">
-              <select className="w-full rounded-md border px-3 py-2" value={report.patient.sex} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, sex:e.target.value}}))}>
+              <select disabled={getRole()==='viewer'} className="w-full rounded-md border px-3 py-2" value={report.patient.sex} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, sex:e.target.value}}))}>
                 <option value="">Select</option>
                 <option>Male</option>
                 <option>Female</option>
                 <option>Other</option>
               </select>
             </FieldBlock>
-            <FieldBlock label="Facility"><Input value={report.patient.facility} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, facility:e.target.value}}))} /></FieldBlock>
-            <FieldBlock label="Specimen"><Input value={report.patient.specimenType} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, specimenType:e.target.value}}))} /></FieldBlock>
-            <FieldBlock label="Collection date"><Input type="date" value={report.patient.collectionDate} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, collectionDate:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Facility"><Input disabled={getRole()==='viewer'} value={report.patient.facility} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, facility:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Specimen"><Input disabled={getRole()==='viewer'} value={report.patient.specimenType} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, specimenType:e.target.value}}))} /></FieldBlock>
+            <FieldBlock label="Collection date"><Input disabled={getRole()==='viewer'} type="date" value={report.patient.collectionDate} onChange={e=>updateAndSave(r=>({...r, patient:{...r.patient, collectionDate:e.target.value}}))} /></FieldBlock>
           </CardContent>
         </Card>
 
