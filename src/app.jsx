@@ -217,12 +217,31 @@ const NavBar = () => (
       </Link>
       <nav className="hidden items-center gap-6 text-sm md:flex">
         <Link to="/reports" className="text-black/70 hover:text-black">Reports</Link>
-        {getRole()==='editor' && (<Link to="/reports/new" className="text-black/70 hover:text-black">New Report</Link>)}
+        {/* Always render, but block if viewer */}
+        <Link
+          to="/reports/new"
+          className="text-black/70 hover:text-black"
+          onClick={(e) => {
+            if (getRole() === 'viewer') {
+              e.preventDefault();
+              alert("You don't have permission to create a report.");
+            }
+          }}
+        >
+          New Report
+        </Link>
         <Link to="/summary" className="text-black/70 hover:text-black">Summary</Link>
         <Link to="/docs" className="text-black/70 hover:text-black">User Manual</Link>
       </nav>
       <div className="flex items-center gap-2">
-        {getRole()==='editor' && (<Link to="/reports/new"><Button size="sm" className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button></Link>)}
+        <Link to="/reports/new" onClick={(e) => {
+            if (getRole() === 'viewer') {
+              e.preventDefault();
+              alert("You don't have permission to create a report.");
+            }
+          }}
+        >
+        <Button size="sm" className="rounded-2xl"><Plus className="mr-2 size-4"/>New</Button></Link>
         <Button size="sm" variant="secondary" className="rounded-2xl" onClick={()=>{ clearAuth(); window.location.href='/login'; }}>Logout</Button>
       </div>
     </Container>
@@ -252,7 +271,18 @@ const Footer = () => (
             <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Culture & AST report sharing</h1>
             <p className="mt-4 text-lg text-neutral-700">Field team register patients information, lab team complete culture, gram-stain, species and AST. Generate a clean PDF and view live summary stats.</p>
             <div className="mt-6 flex gap-3">
-              <Button className="rounded-2xl" onClick={()=>navigate('/reports/new')}>Create report <ArrowRight className="ml-2 size-4"/></Button>
+            <Button
+              className="rounded-2xl"
+              onClick={() => {
+                if (getRole() === 'viewer') {
+                  alert("You don't have permission to create a report.");
+                } else {
+                  navigate('/reports/new');
+                }
+              }}
+            >
+              Create report <ArrowRight className="ml-2 size-4" />
+            </Button>
               <Button variant="secondary" className="rounded-2xl" onClick={()=>navigate('/reports')}>View reports</Button>
             </div>
           </motion.div>
@@ -840,7 +870,7 @@ const ReportDetail = () => {
           <CardContent className="grid gap-4 md:grid-cols-3">
             <FieldBlock label="Received date"><Input disabled={getRole()==='viewer'} type="date" value={report.lab.receivedDate} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, receivedDate:e.target.value}}))} /></FieldBlock>
             <FieldBlock label="Culture">
-              <select className="w-full rounded-md border px-3 py-2" value={report.lab.cultureResult} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, cultureResult:e.target.value}}))}>
+              <select className="w-full rounded-md border px-3 py-2" value={report.lab.cultureResult} disabled={getRole()==='viewer'} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, cultureResult:e.target.value}}))}>
                 {["Pending","Negative","Positive"].map(s=> <option key={s}>{s}</option>)}
               </select>
             </FieldBlock>
