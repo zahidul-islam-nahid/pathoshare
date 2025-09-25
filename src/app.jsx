@@ -43,6 +43,12 @@ async function loadReports(forceServer = false){
   }catch{}
   return forceServer ? [] : local;
 }
+function saveReports(reports){
+  try{
+    const normalized = Array.isArray(reports) ? reports : [];
+    localStorage.setItem(LS_KEY, JSON.stringify(normalized));
+  }catch{}
+}
 async function createReport(report){
   try{ await fetch('/api/reports', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(report) }); }
   catch{}
@@ -702,8 +708,17 @@ const ReportsList = () => {
             className="w-64 rounded-md border px-3 py-2 text-sm"
             aria-label="Search"
           />
-          {/* keep your existing buttons here (Export/Import/New etc.) */}
-          {/* ... */}
+          {getRole()==='editor' && (
+            <>
+              <Button size="sm" variant="secondary" onClick={exportJson} className="rounded-2xl">Export JSON</Button>
+              <Button size="sm" variant="secondary" onClick={exportCsv} className="rounded-2xl">Export CSV</Button>
+              <label className="inline-flex items-center">
+                <input ref={importRef} type="file" accept="application/json" onChange={onImportJson} className="hidden" />
+                <Button size="sm" variant="secondary" onClick={()=>importRef.current?.click()} className="rounded-2xl">Import JSON</Button>
+              </label>
+              <Link to="/reports/new"><Button size="sm" className="rounded-2xl">New</Button></Link>
+            </>
+          )}
         </div>
       </div>
 
@@ -757,13 +772,28 @@ const ReportsList = () => {
 
 function openPrintable(html){
   const w = window.open("", "_blank");
-  if(!w) return;
+  if (!w) return;
+
+  w.document.open();
   w.document.write(html);
   w.document.close();
-  w.focus();
-  w.print();
-}
 
+  // Wait for the new document AND all <img> elements to load
+  const onReady = () => {
+    const imgs = Array.from(w.document.images || []);
+    const waits = imgs.map(img =>
+      img.complete ? Promise.resolve() :
+      new Promise(res => { img.onload = img.onerror = res; })
+    );
+    Promise.all(waits).then(() => {
+      w.focus();
+      w.print();
+    });
+  };
+
+  if (w.document.readyState === "complete") onReady();
+  else w.addEventListener("load", onReady);
+}
 const ReportDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
