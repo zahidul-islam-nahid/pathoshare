@@ -388,7 +388,6 @@ function emptyReport(){
       receivedDate:"",
       cultureResult:"Pending",
       numIsolates: 1,
-      comments:"",
       isolates: [
         { gram: "Gram-negative", species: "", ast: { panel: defaultPanel("Gram-negative"), rows: defaultPanel("Gram-negative").map(a=>({antibiotic:a, sir:"", mic:""})) } }
       ],
@@ -495,7 +494,6 @@ const NewReport = () => {
                 </FieldBlock>
                 <FieldBlock label="Isolate types"><Input type="number" min={0} value={report.lab.numIsolates} onChange={e=>setReport({...report, lab:{...report.lab, numIsolates: Math.max(0, Number(e.target.value||0))}})} /></FieldBlock>
               </div>
-              <FieldBlock label="Comments"><Input value={report.lab.comments} onChange={e=>setReport({...report, lab:{...report.lab, comments:e.target.value}})} /></FieldBlock>
 
               {report.lab.isolates?.map((iso, idx)=> (
                 <div key={idx} className="rounded-xl border p-3">
@@ -634,7 +632,6 @@ const ReportsList = () => {
       cultureResult: r.lab?.cultureResult||'',
       numIsolates: r.lab?.numIsolates ?? (Array.isArray(r.lab?.isolates)? r.lab.isolates.length : 0),
       receivedDate: r.lab?.receivedDate||'',
-      comments: r.lab?.comments||'',
     }));
     const isolateRows = reports.flatMap(r=> (Array.isArray(r.lab?.isolates)? r.lab.isolates: []).map((iso,idx)=>({
       reportId: r.id,
@@ -801,46 +798,208 @@ const ReportDetail = () => {
   }
 
   function exportPDF(){
-    const isoHtml = (report.lab?.isolates||[]).map((iso, idx)=>{
-      const rows = (iso.ast?.rows||[]).filter(r=>r.sir||r.mic);
-      const astRows = rows.map(r=>`<tr><td>${r.antibiotic}</td><td>${r.sir||''}</td><td>${r.mic||''}</td></tr>`).join("");
-      return `<h3>Isolate ${idx+1}</h3>
-        <p><strong>Gram:</strong> ${iso.gram||''} &nbsp; <strong>Species:</strong> ${iso.species||''}</p>
-        <table><thead><tr><th>Antibiotic</th><th>S/I/R</th><th>MIC</th></tr></thead><tbody>${astRows}</tbody></table>`;
-    }).join("<br/>");
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Report ${report.patient.patientId}</title>
-      <style>
-        body{font-family:ui-sans-serif,system-ui,-apple-system; padding:24px;}
-        h1{font-size:20px;margin:0}
-        .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        table{width:100%;border-collapse:collapse;margin-top:12px}
-        th,td{border:1px solid #ddd;padding:6px;font-size:12px}
-        th{background:#f6f6f6;text-align:left}
-      </style></head><body>
-      <h1>Microbiology Report</h1>
-      <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
-      <div class="grid">
-        <div>
-          <h3>Patient</h3>
-          <p><strong>ID:</strong> ${report.patient.patientId||''}</p>
-          <p><strong>Name:</strong> ${report.patient.name||''}</p>
-           <p><strong>Age/Sex:</strong> ${report.patient.age||''} ${report.patient.ageUnit||''} / ${report.patient.sex||''}</p>
-          <p><strong>Specimen:</strong> ${report.patient.specimenType||''}</p>
-          <p><strong>Collected:</strong> ${report.patient.collectionDate||''}</p>
-        </div>
-        <div>
-          <h3>Lab</h3>
-          <p><strong>Received:</strong> ${report.lab.receivedDate||''}</p>
-          <p><strong>Culture:</strong> ${report.lab.cultureResult}</p>
-          <p><strong>Isolate types:</strong> ${report.lab.numIsolates||0}</p>
-          <p><strong>Comments:</strong> ${report.lab.comments||''}</p>
-        </div>
+    const reportingDate = new Date().toLocaleDateString(); // export time = Reporting Date
+    const culture = report?.lab?.cultureResult || 'Pending';
+    const isolates = Array.isArray(report?.lab?.isolates) ? report.lab.isolates : [];
+    const positive = culture === 'Positive';
+    const nIso = positive ? isolates.length : 0;
+  
+    // Decide template: negative, single positive, multiple positive
+    const mode = !positive ? 'neg' : (nIso <= 1 ? 'pos1' : 'posN');
+  
+    // Fixed header text (from your samples)
+    const headerLeftLogo  = '/images/icddrb.jpeg';
+    const headerRightLogo = '/images/shishu.jpeg';
+    const reviewerSign    = '/images/arpita.jpeg';
+    const approverSign    = '/images/muntasir.jpeg';
+  
+    const protocolBlock = `
+      <div style="font-size:12px; line-height:1.15; margin-top:4px;">
+        <div><strong>Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance</div>
+        <div><strong>Principal Investigator:</strong> Mohammad Monir Hossain</div>
+        <div><strong>Protocol No:</strong> PR-24111 &nbsp;&nbsp; <strong>ERC Approval Date:</strong> 3 February 2025</div>
       </div>
-      ${isoHtml}
-      </body></html>`;
+    `; <!-- matches the top of your samples: negative, single, multiple.  -->
+  
+    // Patient/Specimen block (Location & Phase intentionally omitted)
+    const patientSpecimen = `
+      <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
+        <tr>
+          <th style="text-align:left; padding:6px; width:50%; background:#f6f6f6; border:1px solid #ddd;">Patient Information</th>
+          <th style="text-align:left; padding:6px; width:50%; background:#f6f6f6; border:1px solid #ddd;">Specimen Information</th>
+        </tr>
+        <tr>
+          <td style="vertical-align:top; border:1px solid #ddd; padding:8px;">
+            <div><strong>Patient’s Name:</strong> ${report?.patient?.name || ''}</div>
+            <div><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
+            <div><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
+            <div><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
+          </td>
+          <td style="vertical-align:top; border:1px solid #ddd; padding:8px;">
+            <div><strong>Specimen Type:</strong> ${report?.patient?.specimenType || ''}</div>
+            <div><strong>Collection Date:</strong> ${report?.patient?.collectionDate || ''}</div>
+            <div><strong>Reporting Date:</strong> ${reportingDate}</div>
+          </td>
+        </tr>
+      </table>
+    `;
+  
+    // Result line(s)
+    const resultNegative = `
+      <p style="font-size:12px; margin-top:12px;">
+        <strong>Results:</strong><br/>
+        No organism isolated in aerobic condition at 35±2°C.
+      </p>
+    `; <!-- language identical to your negative sample.  -->
+  
+    function isolateHeaderLine() {
+      if (!positive || nIso === 0) return '';
+      if (nIso === 1) {
+        const iso = isolates[0] || {};
+        const name = iso?.species || '';
+        return `
+          <p style="font-size:12px; margin-top:12px;">
+            <strong>Results:</strong><br/>
+            ${name ? `${name} ` : ''}isolated in aerobic condition at 35±2°C.
+          </p>
+        `;
+      }
+      // multiple
+      // label a), b), c) as in your example for two organisms. 
+      const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+      const lines = isolates.map((iso, i) => {
+        const name = iso?.species || '';
+        return `${labels[i]}) ${name}`;
+      }).filter(Boolean);
+      return `
+        <p style="font-size:12px; margin-top:12px;">
+          <strong>Results:</strong><br/>
+          ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
+        </p>
+      `;
+    }
+  
+    // Build ANTIBIOGRAM tables (only when positive & rows have S/I/R or MIC)
+    function antibiogramTables(){
+      if (!positive || nIso === 0) return '';
+      const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+      return isolates.map((iso, idx) => {
+        // keep only rows with any value set
+        const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || r?.mic || '').toString().trim() !== '');
+        if (!rows.length) return '';
+        const label = (nIso > 1) ? `<div style="margin-top:8px; font-weight:600;">${labels[idx]}</div>` : '';
+        const head = `
+          <div style="margin-top:8px; font-size:12px; font-weight:600;">
+            ANTIBIOGRAM (S=Sensitive, R=Resistant, I=Intermediate)
+          </div>
+          <div style="margin:4px 0 6px 0; font-size:12px; font-weight:600;">
+            Antibiotics Sensitivity Pattern of Isolates
+          </div>
+        `;
+        const table = `
+          <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:6px; background:#f6f6f6; border:1px solid #ddd;">Antibiotics</th>
+                <th style="text-align:left; padding:6px; background:#f6f6f6; border:1px solid #ddd;">S/I/R</th>
+                <th style="text-align:left; padding:6px; background:#f6f6f6; border:1px solid #ddd;">MIC</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r=>`
+                <tr>
+                  <td style="border:1px solid #ddd; padding:6px;">${r.antibiotic || ''}</td>
+                  <td style="border:1px solid #ddd; padding:6px;">${r.sir || ''}</td>
+                  <td style="border:1px solid #ddd; padding:6px;">${r.mic || ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+        return `${label}${head}${table}`;
+      }).join('<div style="height:10px;"></div>');
+    }
+  
+    // Disclaimer + signatures (footer)
+    const disclaimer = `
+      <p style="font-size:11px; margin-top:14px;">
+        <em>*Disclaimer:</em><br/>
+        This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
+      </p>
+    `; <!-- matches line in your PDFs.  -->
+  
+    const signatures = `
+      <table style="width:100%; border-collapse:collapse; margin-top:16px; font-size:12px;">
+        <tr>
+          <td style="width:50%; vertical-align:top; padding-right:12px;">
+            <div style="height:60px;">
+              <img src="${reviewerSign}" alt="Reviewed by signature" style="height:60px;"/>
+            </div>
+            <div style="border-top:1px solid #888; padding-top:6px; margin-top:4px;">
+              <strong>Reviewed by</strong><br/>
+              Arpita Shyama Deb, M.Sc<br/>
+              Senior Research Officer,<br/>
+              Virology laboratory<br/>
+              Infectious Diseases Division,<br/>
+              icddr,b
+            </div>
+          </td>
+          <td style="width:50%; vertical-align:top; padding-left:12px;">
+            <div style="height:60px;">
+              <img src="${approverSign}" alt="Approved by signature" style="height:60px;"/>
+            </div>
+            <div style="border-top:1px solid #888; padding-top:6px; margin-top:4px;">
+              <strong>Approved by</strong><br/>
+              Muntasir Alam, PhD<br/>
+              Assistant Scientist<br/>
+              Virology laboratory<br/>
+              Infectious Diseases Division,<br/>
+              icddr,b
+            </div>
+          </td>
+        </tr>
+      </table>
+    `; <!-- names/roles align with your samples.  -->
+  
+    // Put everything together
+    const html = `<!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Report ${report?.patient?.patientId || ''}</title>
+        <style>
+          body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; padding: 20px; color: #111; }
+          .hdr { display:flex; align-items:center; justify-content:space-between; }
+          .hdr img { height: 52px; }
+          h1 { font-size: 18px; margin: 8px 0 0 0; }
+          .section-title { font-size: 14px; font-weight: 600; margin-top: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="hdr">
+          <img src="${headerLeftLogo}" alt="icddr,b logo"/>
+          <img src="${headerRightLogo}" alt="Shishu logo"/>
+        </div>
+  
+        ${protocolBlock}
+  
+        <h1>Microbiology Report</h1>
+  
+        ${patientSpecimen}
+  
+        ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
+  
+        ${mode !== 'neg' ? antibiogramTables() : ''}
+  
+        ${disclaimer}
+  
+        ${signatures}
+      </body>
+    </html>`;
+  
     openPrintable(html);
   }
-
+  
   function updateAndSave(updater){
     const updated = updater(report);
     setReport(updated);
@@ -915,8 +1074,7 @@ const ReportDetail = () => {
               }
               return { ...r, lab: { ...r.lab, numIsolates: num, isolates } };
             })} /></FieldBlock>
-            <FieldBlock label="Comments"><Input disabled={getRole()==='viewer'} value={report.lab.comments} onChange={e=>updateAndSave(r=>({...r, lab:{...r.lab, comments:e.target.value}}))} /></FieldBlock>
-          </CardContent>
+            </CardContent>
         </Card>
 
         {(report.lab?.isolates||[]).map((iso, idx)=> (
