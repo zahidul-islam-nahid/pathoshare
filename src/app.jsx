@@ -870,7 +870,7 @@ const ReportDetail = () => {
     const resultNegative = `
         <div>
             <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-            <p style="font-size:12px; margin:0; line-height:1.15;">
+            <p style="font-size:16px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
         </div>
@@ -884,7 +884,7 @@ const ReportDetail = () => {
             return `
                 <div>
                     <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                    <p style="font-size:12px; margin:0; line-height:1.15;">
+                    <p style="font-size:16px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
                 </div>
@@ -898,7 +898,7 @@ const ReportDetail = () => {
         return `
             <div>
                 <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                <p style="font-size:12px; margin:0; line-height:1.15;">
+                <p style="font-size:16px; margin:0; line-height:1.15;">
                     ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
                 </p>
             </div>
@@ -1033,12 +1033,17 @@ const ReportDetail = () => {
                     font-size: 16px;
                     font-family: 'Times New Roman', Times, serif;
                     text-align: justify;
-                    line-height: 1;
+                    line-height: .8;
                     white-space: pre-line;
                     font-weight: normal;
                     z-index: 1000;
+                    word-wrap: break-word;
                 }
                 
+                .protocol-header .title-line {
+                    line-height: .5;
+                }
+
                 /* Fixed positioned footer */
                 .footer-protocol {
                     position: fixed;
@@ -1060,44 +1065,44 @@ const ReportDetail = () => {
                     z-index: 1000;
                 }
                 
-                .page-content {
-                    position: relative;
-                    min-height: 100vh;
-                    padding-top: 20mm; /* Space for fixed header */
-                    padding-bottom: 15mm; /* Space for fixed footer */
-                }
-                
-                .patient-specimen-section {
-                    position: absolute;
-                    top: 35mm;
-                    left: 10mm;
-                    right: 10mm;
-                    width: calc(100% - 20mm);
-                }
-                
-                .results-section {
-                    position: absolute;
-                    top: 70mm;
-                    left: 10mm;
-                    right: 10mm;
-                    width: calc(100% - 20mm);
-                }
-                
+                /* Fixed positioned disclaimer */
                 .disclaimer-section {
-                    position: absolute;
-                    top: 80mm;
+                    position: fixed;
+                    bottom: 80mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
+                    z-index: 1000;
                 }
                 
+                /* Fixed positioned signatures */
                 .signatures-section {
-                    position: absolute;
-                    top: calc(80mm + 20mm);
+                    position: fixed;
+                    bottom: 20mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
-                    bottom: calc(5mm + 15mm);
+                    z-index: 1000;
+                }
+                
+                /* Main content container - flows naturally */
+                .page-content {
+                    padding: 65mm 10mm 100mm 10mm; /* increased bottom padding for fixed disclaimer/signatures */
+                    min-height: calc(100vh - 165mm); /* Adjust for header, footer, and bottom sections */
+                }
+                
+                /* Content sections - natural flow */
+                .content-section {
+                    margin-bottom: 20px;
+                }
+                
+                .content-section:last-child {
+                    margin-bottom: 0;
+                }
+                
+                /* Bottom sections that should appear at the end */
+                .bottom-section {
+                    margin-top: auto;
                 }
                 
                 @media print {
@@ -1106,15 +1111,16 @@ const ReportDetail = () => {
                         padding: 0;
                     }
                     
+                    /* Ensure content doesn't overlap with fixed disclaimer/signatures */
+                    .page-content {
+                        padding-bottom: 100mm;
+                    }
+                    
+                    /* Prevent page breaks in fixed elements */
                     .disclaimer-section,
                     .signatures-section {
                         page-break-inside: avoid;
                         break-inside: avoid;
-                    }
-                    
-                    /* Show disclaimer and signatures only on last page */
-                    .disclaimer-section {
-                        break-before: page;
                     }
                 }
             </style>
@@ -1124,7 +1130,7 @@ const ReportDetail = () => {
             <img src="${headerLeftLogo}" alt="icddr,b logo" class="header-logo-left"/>
             <img src="${headerRightLogo}" alt="Shishu logo" class="header-logo-right"/>
             <div class="protocol-header">
-    <strong>Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance<br>
+    <strong class="title-line">Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance<br>
     <strong>Principal Investigator:</strong> Mohammad Monir Hossain
 </div>
             
@@ -1132,22 +1138,24 @@ const ReportDetail = () => {
             <div class="footer-protocol">Protocol No: PR-24111</div>
             <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
             
+            <!-- Fixed positioned disclaimer and signatures -->
+            <div class="disclaimer-section">
+                ${disclaimer}
+            </div>
+            
+            <div class="signatures-section">
+                ${signatures}
+            </div>
+            
+            <!-- Main content that flows naturally -->
             <div class="page-content">
-                <div class="patient-specimen-section">
+                <div class="content-section">
                     ${patientSpecimen}
                 </div>
                 
-                <div class="results-section">
+                <div class="content-section">
                     ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
                     ${mode !== 'neg' ? antibiogramTables() : ''}
-                </div>
-                
-                <div class="disclaimer-section">
-                    ${disclaimer}
-                </div>
-                
-                <div class="signatures-section">
-                    ${signatures}
                 </div>
             </div>
         </body>
