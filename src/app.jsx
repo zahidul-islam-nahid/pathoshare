@@ -1041,7 +1041,7 @@ const ReportDetail = () => {
                 }
                 
                 .protocol-header .title-line {
-                    line-height: .5;
+                    line-height: .7;
                 }
 
                 /* Fixed positioned footer */
