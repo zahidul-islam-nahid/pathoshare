@@ -1008,13 +1008,13 @@ const ReportDetail = () => {
                         margin-bottom: 5px;
                         margin-top: 5px;
                     }
-                    @top-center {
+                    @top-left {
                         content: "Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance\\A Principal Investigator: Mohammad Monir Hossain";
                         font-size: 13px;
                         font-family: 'Times New Roman', Times, serif;
                         text-align: left;
                         line-height: 1.3;
-                        margin: 10mm 10mm 0 10mm;
+                        margin: 15mm 10mm 0 10mm;
                         white-space: pre-line;
                         font-weight: normal;
                     }
