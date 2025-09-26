@@ -1026,7 +1026,7 @@ const ReportDetail = () => {
                 
                 .protocol-header {
                     position: fixed;
-                    top: 17mm;
+                    top: 19mm;
                     left: 10mm;
                     right: 10mm;
                     font-size: 16px;
@@ -1040,8 +1040,8 @@ const ReportDetail = () => {
                 .protocol-header .title-line,
                 .protocol-header .pi-line {
                     display: block;
-                    line-height: 0.7;
-                    margin-bottom: 0.2em; /* Control spacing between lines */
+                    line-height: 1;
+                    margin-bottom: 0.5em; /* Control spacing between lines */
                 }
 
                 /* Fixed positioned footer */
