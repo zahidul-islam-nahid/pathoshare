@@ -1027,15 +1027,15 @@ const ReportDetail = () => {
                 /* Fixed positioned protocol header */
                 .protocol-header {
                     position: fixed;
-                    top: 20mm;
+                    top: 17mm;
                     left: 10mm;
                     right: 10mm;
                     font-size: 13px;
                     font-family: 'Times New Roman', Times, serif;
-                    text-align: left;
-                    line-height: 1.5;
+                    text-align: justify;
+                    line-height: 1;
                     white-space: pre-line;
-                    font-weight: bold;
+                    font-weight: normal;
                     z-index: 1000;
                 }
                 
@@ -1069,7 +1069,7 @@ const ReportDetail = () => {
                 
                 .patient-specimen-section {
                     position: absolute;
-                    top: 30mm;
+                    top: 45mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
@@ -1077,7 +1077,7 @@ const ReportDetail = () => {
                 
                 .results-section {
                     position: absolute;
-                    top: 55mm;
+                    top: 70mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
