@@ -846,31 +846,31 @@ const ReportDetail = () => {
     const approverSign = '/images/muntasir.jpeg';
 
     const patientSpecimen = `
-        <table style="width:100%; border-collapse:collapse; margin-top:20px; font-size:12px;">
+        <table style="width:100%; border-collapse:collapse; margin:0; font-size:12px; line-height:1.15; border:1px solid #333;">
             <tr>
-                <th style="text-align:left; padding:8px; width:50%; background:#f6f6f6; border:1px solid #333; font-weight:bold;">Patient Information</th>
-                <th style="text-align:left; padding:8px; width:50%; background:#f6f6f6; border:1px solid #333; font-weight:bold;">Specimen Information</th>
+                <th style="text-align:left; padding:4px 8px; width:50%; background:#f6f6f6; border-bottom:1px solid #333; border-right:1px solid #333; font-weight:bold; line-height:1.15;">Patient Information</th>
+                <th style="text-align:left; padding:4px 8px; width:50%; background:#f6f6f6; border-bottom:1px solid #333; font-weight:bold; line-height:1.15;">Specimen Information</th>
             </tr>
             <tr>
-                <td style="vertical-align:top; border:1px solid #333; padding:12px;">
-                    <div style="margin-bottom:8px;"><strong>Patient's Name:</strong> ${report?.patient?.name || ''}</div>
-                    <div style="margin-bottom:8px;"><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
-                    <div style="margin-bottom:8px;"><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
-                    <div style="margin-bottom:8px;"><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
+                <td style="vertical-align:top; border-right:1px solid #333; padding:6px 8px; line-height:1.15;">
+                    <div style="margin-bottom:4px; line-height:1.15;"><strong>Patient's Name:</strong> ${report?.patient?.name || ''}</div>
+                    <div style="margin-bottom:4px; line-height:1.15;"><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
+                    <div style="margin-bottom:4px; line-height:1.15;"><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
+                    <div style="margin-bottom:0; line-height:1.15;"><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
                 </td>
-                <td style="vertical-align:top; border:1px solid #333; padding:12px;">
-                    <div style="margin-bottom:8px;"><strong>Specimen Type:</strong> ${report?.patient?.specimenType || ''}</div>
-                    <div style="margin-bottom:8px;"><strong>Collection Date:</strong> ${report?.patient?.collectionDate || ''}</div>
-                    <div style="margin-bottom:8px;"><strong>Reporting Date:</strong> ${report?.lab?.finalReportDate || ''}</div>
+                <td style="vertical-align:top; padding:6px 8px; line-height:1.15;">
+                    <div style="margin-bottom:4px; line-height:1.15;"><strong>Specimen Type:</strong> ${report?.patient?.specimenType || ''}</div>
+                    <div style="margin-bottom:4px; line-height:1.15;"><strong>Collection Date:</strong> ${report?.patient?.collectionDate || ''}</div>
+                    <div style="margin-bottom:0; line-height:1.15;"><strong>Reporting Date:</strong> ${report?.lab?.finalReportDate || ''}</div>
                 </td>
             </tr>
         </table>
     `;
 
     const resultNegative = `
-        <div style="margin-top:30px;">
-            <p style="font-size:13px; margin-bottom:0; font-weight:bold;">Results:</p>
-            <p style="font-size:12px; margin-top:8px; line-height:1.5;">
+        <div>
+            <p style="font-size:13px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
+            <p style="font-size:12px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
         </div>
@@ -882,9 +882,9 @@ const ReportDetail = () => {
             const iso = isolates[0] || {};
             const name = iso?.species || '';
             return `
-                <div style="margin-top:30px;">
-                    <p style="font-size:13px; margin-bottom:0; font-weight:bold;">Results:</p>
-                    <p style="font-size:12px; margin-top:8px; line-height:1.5;">
+                <div>
+                    <p style="font-size:13px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
+                    <p style="font-size:12px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
                 </div>
@@ -896,9 +896,9 @@ const ReportDetail = () => {
             return `${labels[i]}) <i>${name}</i>`;
         }).filter(Boolean);
         return `
-            <div style="margin-top:30px;">
-                <p style="font-size:13px; margin-bottom:0; font-weight:bold;">Results:</p>
-                <p style="font-size:12px; margin-top:8px; line-height:1.5;">
+            <div>
+                <p style="font-size:13px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
+                <p style="font-size:12px; margin:0; line-height:1.15;">
                     ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
                 </p>
             </div>
@@ -911,56 +911,56 @@ const ReportDetail = () => {
         return isolates.map((iso, idx) => {
             const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || '').toString().trim() !== '');
             if (!rows.length) return '';
-            const label = (nIso > 1) ? `<div style="margin-top:20px; font-weight:bold; font-size:13px;">${labels[idx]}</div>` : '';
+            const label = (nIso > 1) ? `<div style="margin:12px 0 6px 0; font-weight:bold; font-size:13px; line-height:1.15;">${labels[idx]}</div>` : '';
             const head = `
-                <div style="margin-top:20px; font-size:13px; font-weight:bold;">
+                <div style="margin:12px 0 4px 0; font-size:13px; font-weight:bold; line-height:1.15;">
                     ANTIBIOGRAM (S=Sensitive, R=Resistant, I=Intermediate)
                 </div>
-                <div style="margin:8px 0 12px 0; font-size:12px; font-weight:bold;">
+                <div style="margin:0 0 8px 0; font-size:12px; font-weight:bold; line-height:1.15;">
                     Antibiotics Sensitivity Pattern of Isolates
                 </div>
             `;
             const table = `
-                <table style="width:100%; table-layout:fixed; font-size:12px; margin-top:8px; border-collapse:collapse;">
+                <table style="width:100%; table-layout:fixed; font-size:12px; margin:0; border-collapse:collapse; line-height:1.15;">
                     <thead>
                         <tr>
-                            <th style="text-align:left; padding:8px; background:#f6f6f6; font-weight:bold; width:70%;">Antibiotics</th>
-                            <th style="text-align:left; padding:8px; background:#f6f6f6; font-weight:bold; width:30%;">S/I/R</th>
+                            <th style="text-align:left; padding:4px 8px; background:#f6f6f6; font-weight:bold; width:70%; line-height:1.15; border:none;">Antibiotics</th>
+                            <th style="text-align:left; padding:4px 8px; background:#f6f6f6; font-weight:bold; width:30%; line-height:1.15; border:none;">S/I/R</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${rows.map(r => `
                             <tr>
-                                <td style="padding:8px;">${r.antibiotic || ''}</td>
-                                <td style="padding:8px;">${r.sir || ''}</td>
+                                <td style="padding:4px 8px; line-height:1.15; border:none;">${r.antibiotic || ''}</td>
+                                <td style="padding:4px 8px; line-height:1.15; border:none;">${r.sir || ''}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             `;
             return `${label}${head}${table}`;
-        }).join('<div style="height:15px;"></div>');
+        }).join('<div style="height:8px;"></div>');
     }
 
     const disclaimer = `
-        <div style="margin-top:40px;">
-            <p style="font-size:12px; margin:0; font-weight:bold;">
+        <div>
+            <p style="font-size:12px; margin:0 0 3px 0; font-weight:bold; line-height:1.15;">
                 <em>*Disclaimer:</em>
             </p>
-            <p style="font-size:12px; margin-top:4px; line-height:1.4;">
+            <p style="font-size:12px; margin:0; line-height:1.15;">
                 This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
             </p>
         </div>
     `;
 
     const signatures = `
-        <table style="width:100%; border-collapse:collapse; margin-top:30px; font-size:12px;">
+        <table style="width:100%; border-collapse:collapse; margin:0; font-size:12px; line-height:1.15;">
             <tr>
-                <td style="width:50%; vertical-align:top; padding-right:20px;">
-                    <div style="height:70px; margin-bottom:10px;">
-                        <img src="${reviewerSign}" alt="Reviewed by signature" style="height:60px;"/>
+                <td style="width:50%; vertical-align:top; padding-right:15px;">
+                    <div style="height:50px; margin-bottom:6px;">
+                        <img src="${reviewerSign}" alt="Reviewed by signature" style="height:45px;"/>
                     </div>
-                    <div style="border-top:1px solid #333; padding-top:8px;">
+                    <div style="border-top:1px solid #333; padding-top:4px; line-height:1.15;">
                         <strong>Reviewed by</strong><br/>
                         Arpita Shyama Deb, M.Sc<br/>
                         Senior Research Officer,<br/>
@@ -969,11 +969,11 @@ const ReportDetail = () => {
                         icddr,b
                     </div>
                 </td>
-                <td style="width:50%; vertical-align:top; padding-left:20px;">
-                    <div style="height:70px; margin-bottom:10px;">
-                        <img src="${approverSign}" alt="Approved by signature" style="height:60px;"/>
+                <td style="width:50%; vertical-align:top; padding-left:15px;">
+                    <div style="height:50px; margin-bottom:6px;">
+                        <img src="${approverSign}" alt="Approved by signature" style="height:45px;"/>
                     </div>
-                    <div style="border-top:1px solid #333; padding-top:8px;">
+                    <div style="border-top:1px solid #333; padding-top:4px; line-height:1.15;">
                         <strong>Approved by</strong><br/>
                         Muntasir Alam, PhD<br/>
                         Assistant Scientist<br/>
@@ -993,43 +993,7 @@ const ReportDetail = () => {
             <style>
                 @page {
                     size: A4 portrait;
-                    margin: 20mm 10mm 10mm 10mm;
-                    @top-left {
-                        content: url("${headerLeftLogo}");
-                        width: 60px;
-                        height: auto;
-                        margin-bottom: 5px;
-                        margin-top: 5px;
-                    }
-                    @top-right {
-                        content: url("${headerRightLogo}");
-                        width: 60px;
-                        height: auto;
-                        margin-bottom: 5px;
-                        margin-top: 5px;
-                    }
-                    @top-left {
-                        content: "Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance\\A Principal Investigator: Mohammad Monir Hossain";
-                        font-size: 13px;
-                        font-family: 'Times New Roman', Times, serif;
-                        text-align: left;
-                        line-height: 1.3;
-                        margin: 15mm 10mm 0 10mm;
-                        white-space: pre-line;
-                        font-weight: normal;
-                    }
-                    @bottom-left {
-                        content: "Protocol No: PR-24111";
-                        font-size: 10px;
-                        font-weight: bold;
-                        font-family: 'Times New Roman', Times, serif;
-                    }
-                    @bottom-right {
-                        content: "ERC Approval Date: 3 February 2025";
-                        font-size: 10px;
-                        font-weight: bold;
-                        font-family: 'Times New Roman', Times, serif;
-                    }
+                    margin: 0 0 0 0; /* top, right, bottom, left */
                 }
                 
                 body {
@@ -1038,30 +1002,102 @@ const ReportDetail = () => {
                     margin: 0;
                     padding: 0;
                     font-size: 12px;
-                    line-height: 1.4;
+                    line-height: 1.15;
+                }
+                
+                /* Fixed positioned logos */
+                .header-logo-left {
+                    position: fixed;
+                    top: 3mm;
+                    left: 10mm;
+                    width: 15mm;
+                    height: 5mm;
+                    z-index: 1000;
+                }
+                
+                .header-logo-right {
+                    position: fixed;
+                    top: 3mm;
+                    right: 10mm;
+                    width: 15mm;
+                    height: 5mm;
+                    z-index: 1000;
+                }
+                
+                /* Fixed positioned protocol header */
+                .protocol-header {
+                    position: fixed;
+                    top: 10mm;
+                    left: 10mm;
+                    right: 10mm;
+                    font-size: 13px;
+                    font-family: 'Times New Roman', Times, serif;
+                    text-align: left;
+                    line-height: 1.3;
+                    white-space: pre-line;
+                    font-weight: normal;
+                    z-index: 1000;
+                }
+                
+                /* Fixed positioned footer */
+                .footer-protocol {
+                    position: fixed;
+                    bottom: 5mm;
+                    left: 10mm;
+                    font-size: 10px;
+                    font-weight: bold;
+                    font-family: 'Times New Roman', Times, serif;
+                    z-index: 1000;
+                }
+                
+                .footer-erc {
+                    position: fixed;
+                    bottom: 5mm;
+                    right: 10mm;
+                    font-size: 10px;
+                    font-weight: bold;
+                    font-family: 'Times New Roman', Times, serif;
+                    z-index: 1000;
                 }
                 
                 .page-content {
-                    padding-top: 60px; /* Space for header */
-                    padding-bottom: 30px; /* Space for footer */
-                    padding-left: 70px; /* Align with protocol title */
-                    min-height: calc(100vh - 90px);
-                    display: flex;
-                    flex-direction: column;
+                    position: relative;
+                    min-height: 100vh;
+                    padding-top: 20mm; /* Space for fixed header */
+                    padding-bottom: 15mm; /* Space for fixed footer */
                 }
                 
-                .main-content {
-                    flex: 1;
+                .patient-specimen-section {
+                    position: absolute;
+                    top: 21mm;
+                    left: 10mm;
+                    right: 10mm;
+                    width: calc(100% - 20mm);
                 }
                 
-                .footer-section {
-                    margin-top: auto;
-                    page-break-inside: avoid;
+                .results-section {
+                    position: absolute;
+                    top: 40mm;
+                    left: 10mm;
+                    right: 10mm;
+                    width: calc(100% - 20mm);
                 }
                 
-                /* Hide original header elements since they're in page margins */
-                .original-header {
-                    display: none;
+                .disclaimer-section {
+                    position: absolute;
+                    top: 80mm;
+                    left: 10mm;
+                    right: 10mm;
+                    width: calc(100% - 20mm);
+                }
+                
+                .signatures-section {
+                    position: absolute;
+                    top: calc(80mm + 20mm);
+                    left: 10mm;
+                    right: 10mm;
+                    width: calc(100% - 20mm);
+                    bottom: calc(5mm + 15mm);
                 }
                 
                 @media print {
@@ -1070,42 +1106,46 @@ const ReportDetail = () => {
                         padding: 0;
                     }
                     
-                    .page-content {
-                        padding-top: 60px;
-                        padding-bottom: 30px;
-                    }
-                    
-                    .footer-section {
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                    }
-                    
+                    .disclaimer-section,
                     .signatures-section {
                         page-break-inside: avoid;
                         break-inside: avoid;
+                    }
+                    
+                    /* Show disclaimer and signatures only on last page */
+                    .disclaimer-section {
+                        break-before: page;
                     }
                 }
             </style>
         </head>
         <body>
+            <!-- Fixed positioned header elements -->
+            <img src="${headerLeftLogo}" alt="icddr,b logo" class="header-logo-left"/>
+            <img src="${headerRightLogo}" alt="Shishu logo" class="header-logo-right"/>
+            <div class="protocol-header">Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance
+Principal Investigator: Mohammad Monir Hossain</div>
+            
+            <!-- Fixed positioned footer elements -->
+            <div class="footer-protocol">Protocol No: PR-24111</div>
+            <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
+            
             <div class="page-content">
-                <div class="main-content">
-                    <!-- Original header (hidden, now in page margins) -->
-                    <div class="original-header">
-                        <img src="${headerLeftLogo}" alt="icddr,b logo"/>
-                        <img src="${headerRightLogo}" alt="Shishu logo"/>
-                    </div>
-                    
+                <div class="patient-specimen-section">
                     ${patientSpecimen}
+                </div>
+                
+                <div class="results-section">
                     ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
                     ${mode !== 'neg' ? antibiogramTables() : ''}
                 </div>
                 
-                <div class="footer-section">
+                <div class="disclaimer-section">
                     ${disclaimer}
-                    <div class="signatures-section">
-                        ${signatures}
-                    </div>
+                </div>
+                
+                <div class="signatures-section">
+                    ${signatures}
                 </div>
             </div>
         </body>
