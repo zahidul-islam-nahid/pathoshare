@@ -1001,7 +1001,7 @@ const ReportDetail = () => {
                         top: 5mm;
                         left: 6mm;
                         width: 15mm;
-                        height: 4mm;
+                        height: auto;
                     }
                     
                     @top-right {
@@ -1010,7 +1010,7 @@ const ReportDetail = () => {
                         top: 5mm;
                         right: 6mm;
                         width: 15mm;
-                        height: 4mm;
+                        height: auto;
                     }
                     
                     @top-center {
