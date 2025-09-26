@@ -1008,7 +1008,7 @@ const ReportDetail = () => {
                 /* Fixed positioned logos */
                 .header-logo-left {
                     position: fixed;
-                    top: 5mm;
+                    top: 2mm;
                     left: 10mm;
                     width: auto;
                     height: auto;
@@ -1017,7 +1017,7 @@ const ReportDetail = () => {
                 
                 .header-logo-right {
                     position: fixed;
-                    top: 5mm;
+                    top: 2mm;
                     right: 10mm;
                     width: auto;
                     height: auto;
@@ -1027,15 +1027,15 @@ const ReportDetail = () => {
                 /* Fixed positioned protocol header */
                 .protocol-header {
                     position: fixed;
-                    top: 10mm;
+                    top: 20mm;
                     left: 10mm;
                     right: 10mm;
                     font-size: 13px;
                     font-family: 'Times New Roman', Times, serif;
                     text-align: left;
-                    line-height: 1.3;
+                    line-height: 1.5;
                     white-space: pre-line;
-                    font-weight: normal;
+                    font-weight: bold;
                     z-index: 1000;
                 }
                 
@@ -1045,7 +1045,7 @@ const ReportDetail = () => {
                     bottom: 5mm;
                     left: 10mm;
                     font-size: 10px;
-                    font-weight: bold;
+                    font-weight: normal;
                     font-family: 'Times New Roman', Times, serif;
                     z-index: 1000;
                 }
@@ -1069,7 +1069,7 @@ const ReportDetail = () => {
                 
                 .patient-specimen-section {
                     position: absolute;
-                    top: 21mm;
+                    top: 30mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
@@ -1077,7 +1077,7 @@ const ReportDetail = () => {
                 
                 .results-section {
                     position: absolute;
-                    top: 40mm;
+                    top: 55mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
@@ -1123,8 +1123,10 @@ const ReportDetail = () => {
             <!-- Fixed positioned header elements -->
             <img src="${headerLeftLogo}" alt="icddr,b logo" class="header-logo-left"/>
             <img src="${headerRightLogo}" alt="Shishu logo" class="header-logo-right"/>
-            <div class="protocol-header">Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance
-Principal Investigator: Mohammad Monir Hossain</div>
+            <div class="protocol-header">
+    <strong>Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance<br>
+    <strong>Principal Investigator:</strong> Mohammad Monir Hossain
+</div>
             
             <!-- Fixed positioned footer elements -->
             <div class="footer-protocol">Protocol No: PR-24111</div>
