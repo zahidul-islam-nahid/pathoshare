@@ -1024,7 +1024,6 @@ const ReportDetail = () => {
                     z-index: 1000;
                 }
                 
-                /* Fixed positioned protocol header */
                 .protocol-header {
                     position: fixed;
                     top: 17mm;
@@ -1033,15 +1032,16 @@ const ReportDetail = () => {
                     font-size: 16px;
                     font-family: 'Times New Roman', Times, serif;
                     text-align: justify;
-                    line-height: .8;
-                    white-space: pre-line;
                     font-weight: normal;
                     z-index: 1000;
                     word-wrap: break-word;
                 }
-                
-                .protocol-header .title-line {
-                    line-height: .7;
+
+                .protocol-header .title-line,
+                .protocol-header .pi-line {
+                    display: block;
+                    line-height: 0.7;
+                    margin-bottom: 0.2em; /* Control spacing between lines */
                 }
 
                 /* Fixed positioned footer */
@@ -1081,8 +1081,8 @@ const ReportDetail = () => {
                 
                 /* Main content container - flows naturally */
                 .page-content {
-                    padding: 37mm 10mm 20mm 10mm; /* top, right, bottom, left */
-                    min-height: calc(100vh - 85mm); /* Adjust for header and footer space */
+                    padding: 39mm 10mm 20mm 10mm; /* top, right, bottom, left */
+                    min-height: calc(100vh - 50mm); /* Adjust for header and footer space */
                 }
                 
                 /* Content sections - natural flow */
@@ -1142,9 +1142,9 @@ const ReportDetail = () => {
             <img src="${headerLeftLogo}" alt="icddr,b logo" class="header-logo-left"/>
             <img src="${headerRightLogo}" alt="Shishu logo" class="header-logo-right"/>
             <div class="protocol-header">
-    <strong class="title-line">Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance<br>
-    <strong>Principal Investigator:</strong> Mohammad Monir Hossain
-</div>
+                <span class="title-line"><strong>Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance</span>
+                <span class="pi-line"><strong>Principal Investigator:</strong> Mohammad Monir Hossain</span>
+            </div>
             
             <!-- Fixed positioned footer elements -->
             <div class="footer-protocol">Protocol No: PR-24111</div>
