@@ -898,7 +898,7 @@ const ReportDetail = () => {
         return `
             <div>
                 <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                <p style="font-size:12px; margin:0; line-height:1.15;">
+                <p style="font-size:16px; margin:0; line-height:1.15;">
                     ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
                 </p>
             </div>
@@ -916,7 +916,7 @@ const ReportDetail = () => {
                 <div style="margin:12px 0 4px 0; font-size:16px; font-weight:bold; line-height:1.15;">
                     ANTIBIOGRAM (S=Sensitive, R=Resistant, I=Intermediate)
                 </div>
-                <div style="margin:0 0 8px 0; font-size:12px; font-weight:bold; line-height:1.15;">
+                <div style="margin:0 0 8px 0; font-size:16px; font-weight:bold; line-height:1.15;">
                     Antibiotics Sensitivity Pattern of Isolates
                 </div>
             `;
@@ -1081,7 +1081,7 @@ const ReportDetail = () => {
                 
                 /* Main content container - flows naturally */
                 .page-content {
-                    padding: 34mm 10mm 20mm 10mm; /* top, right, bottom, left */
+                    padding: 37mm 10mm 20mm 10mm; /* top, right, bottom, left */
                     min-height: calc(100vh - 85mm); /* Adjust for header and footer space */
                 }
                 
