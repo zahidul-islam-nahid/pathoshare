@@ -870,7 +870,7 @@ const ReportDetail = () => {
     const resultNegative = `
         <div>
             <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-            <p style="font-size:16px; margin:0; line-height:1.15;">
+            <p style="font-size:12px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
         </div>
@@ -884,7 +884,7 @@ const ReportDetail = () => {
             return `
                 <div>
                     <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                    <p style="font-size:16px; margin:0; line-height:1.15;">
+                    <p style="font-size:12px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
                 </div>
@@ -898,7 +898,7 @@ const ReportDetail = () => {
         return `
             <div>
                 <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                <p style="font-size:16px; margin:0; line-height:1.15;">
+                <p style="font-size:12px; margin:0; line-height:1.15;">
                     ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
                 </p>
             </div>
@@ -1065,30 +1065,24 @@ const ReportDetail = () => {
                     z-index: 1000;
                 }
                 
-                /* Fixed positioned disclaimer */
+                /* Fixed positioned disclaimer - appears at bottom of page */
                 .disclaimer-section {
-                    position: fixed;
-                    bottom: 80mm;
-                    left: 10mm;
-                    right: 10mm;
-                    width: calc(100% - 20mm);
-                    z-index: 1000;
+                    margin-top: 40px;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
                 }
                 
-                /* Fixed positioned signatures */
+                /* Fixed positioned signatures - appears at bottom of page */
                 .signatures-section {
-                    position: fixed;
-                    bottom: 20mm;
-                    left: 10mm;
-                    right: 10mm;
-                    width: calc(100% - 20mm);
-                    z-index: 1000;
+                    margin-top: 20px;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
                 }
                 
                 /* Main content container - flows naturally */
                 .page-content {
-                    padding: 65mm 10mm 100mm 10mm; /* increased bottom padding for fixed disclaimer/signatures */
-                    min-height: calc(100vh - 165mm); /* Adjust for header, footer, and bottom sections */
+                    padding: 65mm 10mm 20mm 10mm; /* top, right, bottom, left */
+                    min-height: calc(100vh - 85mm); /* Adjust for header and footer space */
                 }
                 
                 /* Content sections - natural flow */
@@ -1111,16 +1105,34 @@ const ReportDetail = () => {
                         padding: 0;
                     }
                     
-                    /* Ensure content doesn't overlap with fixed disclaimer/signatures */
-                    .page-content {
-                        padding-bottom: 100mm;
-                    }
-                    
-                    /* Prevent page breaks in fixed elements */
+                    /* Ensure disclaimer and signatures appear at bottom and don't break awkwardly */
                     .disclaimer-section,
                     .signatures-section {
                         page-break-inside: avoid;
                         break-inside: avoid;
+                    }
+                    
+                    /* Keep disclaimer and signatures together at the end */
+                    .bottom-sections {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        page-break-before: avoid;
+                    }
+                    
+                    /* Push disclaimer and signatures to bottom if there's space */
+                    .page-content {
+                        display: flex;
+                        flex-direction: column;
+                        min-height: calc(100vh - 85mm);
+                    }
+                    
+                    .content-sections {
+                        flex: 1;
+                    }
+                    
+                    .bottom-sections {
+                        margin-top: auto;
+                        flex-shrink: 0;
                     }
                 }
             </style>
@@ -1138,24 +1150,28 @@ const ReportDetail = () => {
             <div class="footer-protocol">Protocol No: PR-24111</div>
             <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
             
-            <!-- Fixed positioned disclaimer and signatures -->
-            <div class="disclaimer-section">
-                ${disclaimer}
-            </div>
-            
-            <div class="signatures-section">
-                ${signatures}
-            </div>
-            
             <!-- Main content that flows naturally -->
             <div class="page-content">
-                <div class="content-section">
-                    ${patientSpecimen}
+                <div class="content-sections">
+                    <div class="content-section">
+                        ${patientSpecimen}
+                    </div>
+                    
+                    <div class="content-section">
+                        ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
+                        ${mode !== 'neg' ? antibiogramTables() : ''}
+                    </div>
                 </div>
                 
-                <div class="content-section">
-                    ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
-                    ${mode !== 'neg' ? antibiogramTables() : ''}
+                <!-- Bottom sections - will appear at end of content flow -->
+                <div class="bottom-sections">
+                    <div class="disclaimer-section">
+                        ${disclaimer}
+                    </div>
+                    
+                    <div class="signatures-section">
+                        ${signatures}
+                    </div>
                 </div>
             </div>
         </body>
@@ -1163,15 +1179,6 @@ const ReportDetail = () => {
 
     openPrintable(html);
 }
-
-  
-  function updateAndSave(updater){
-    const updated = updater(report);
-    setReport(updated);
-    const p = updateReport(updated);
-    pendingSaveRef.current = p;
-    return p;
-  }
 
   return (
     <Section>
