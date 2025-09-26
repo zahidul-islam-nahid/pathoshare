@@ -1008,19 +1008,19 @@ const ReportDetail = () => {
                 /* Fixed positioned logos */
                 .header-logo-left {
                     position: fixed;
-                    top: 3mm;
+                    top: 5mm;
                     left: 10mm;
-                    width: 15mm;
-                    height: 5mm;
+                    width: auto;
+                    height: auto;
                     z-index: 1000;
                 }
                 
                 .header-logo-right {
                     position: fixed;
-                    top: 3mm;
+                    top: 5mm;
                     right: 10mm;
-                    width: 15mm;
-                    height: 5mm;
+                    width: auto;
+                    height: auto;
                     z-index: 1000;
                 }
                 
