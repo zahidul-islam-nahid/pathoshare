@@ -837,284 +837,282 @@ const ReportDetail = () => {
     const isolates = Array.isArray(report?.lab?.isolates) ? report.lab.isolates : [];
     const positive = culture === 'Positive';
     const nIso = positive ? isolates.length : 0;
-  
+
     const mode = !positive ? 'neg' : (nIso <= 1 ? 'pos1' : 'posN');
-  
+
     const headerLeftLogo = '/images/icddrb.jpeg';
     const headerRightLogo = '/images/shishu.jpeg';
     const reviewerSign = '/images/arpita.jpeg';
     const approverSign = '/images/muntasir.jpeg';
-  
+
     const patientSpecimen = `
-      <table class="tight-table" style="width:100%; border-collapse:collapse;">
-        <tr>
-          <th style="text-align:left; padding:3px 0; font-weight:bold;">Patient Information</th>
-          <th style="text-align:left; padding:3px 0; font-weight:bold;">Specimen Information</th>
-        </tr>
-        <tr>
-          <td style="vertical-align:top; padding:3px 0;">
-            <div style="margin-bottom:2px;"><strong>Patient's Name:</strong> ${report?.patient?.name || ''}</div>
-            <div style="margin-bottom:2px;"><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
-            <div style="margin-bottom:2px;"><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
-            <div style="margin-bottom:2px;"><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
-          </td>
-          <td style="vertical-align:top; padding:3px 0;">
-            <div style="margin-bottom:2px;"><strong>Specimen Type:</strong> ${report?.patient?.specimenType || ''}</div>
-            <div style="margin-bottom:2px;"><strong>Collection Date:</strong> ${report?.patient?.collectionDate || ''}</div>
-            <div style="margin-bottom:2px;"><strong>Reporting Date:</strong> ${report?.lab?.finalReportDate || ''}</div>
-          </td>
-        </tr>
-      </table>
+        <table style="width:100%; border-collapse:collapse; margin-top:20px; font-size:12px;">
+            <tr>
+                <th style="text-align:left; padding:8px; width:50%; background:#f6f6f6; border:1px solid #333; font-weight:bold;">Patient Information</th>
+                <th style="text-align:left; padding:8px; width:50%; background:#f6f6f6; border:1px solid #333; font-weight:bold;">Specimen Information</th>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; border:1px solid #333; padding:12px;">
+                    <div style="margin-bottom:8px;"><strong>Patient's Name:</strong> ${report?.patient?.name || ''}</div>
+                    <div style="margin-bottom:8px;"><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
+                    <div style="margin-bottom:8px;"><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
+                    <div style="margin-bottom:8px;"><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
+                </td>
+                <td style="vertical-align:top; border:1px solid #333; padding:12px;">
+                    <div style="margin-bottom:8px;"><strong>Specimen Type:</strong> ${report?.patient?.specimenType || ''}</div>
+                    <div style="margin-bottom:8px;"><strong>Collection Date:</strong> ${report?.patient?.collectionDate || ''}</div>
+                    <div style="margin-bottom:8px;"><strong>Reporting Date:</strong> ${report?.lab?.finalReportDate || ''}</div>
+                </td>
+            </tr>
+        </table>
     `;
-  
+
     const resultNegative = `
-      <div>
-        <p style="margin:0; font-weight:bold;">Results:</p>
-        <p style="margin-top:4px;">
-          No organism isolated in aerobic and microaerophilic condition at 35±2°C.
-        </p>
-      </div>
-    `;
-  
-    function isolateHeaderLine() {
-      if (!positive || nIso === 0) return '';
-      if (nIso === 1) {
-        const iso = isolates[0] || {};
-        const name = iso?.species || '';
-        return `
-          <div>
-            <p style="margin:0; font-weight:bold;">Results:</p>
-            <p style="margin-top:4px;">
-              ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
+        <div style="margin-top:30px;">
+            <p style="font-size:13px; margin-bottom:0; font-weight:bold;">Results:</p>
+            <p style="font-size:12px; margin-top:8px; line-height:1.5;">
+                No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
-          </div>
-        `;
-      }
-      const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
-      const lines = isolates.map((iso, i) => {
-        const name = iso?.species || '';
-        return `${labels[i]}) <i>${name}</i>`;
-      }).filter(Boolean);
-      return `
-        <div>
-          <p style="margin:0; font-weight:bold;">Results:</p>
-          <p style="margin-top:4px;">
-            ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
-          </p>
         </div>
-      `;
+    `;
+
+    function isolateHeaderLine() {
+        if (!positive || nIso === 0) return '';
+        if (nIso === 1) {
+            const iso = isolates[0] || {};
+            const name = iso?.species || '';
+            return `
+                <div style="margin-top:30px;">
+                    <p style="font-size:13px; margin-bottom:0; font-weight:bold;">Results:</p>
+                    <p style="font-size:12px; margin-top:8px; line-height:1.5;">
+                        ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
+                    </p>
+                </div>
+            `;
+        }
+        const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+        const lines = isolates.map((iso, i) => {
+            const name = iso?.species || '';
+            return `${labels[i]}) <i>${name}</i>`;
+        }).filter(Boolean);
+        return `
+            <div style="margin-top:30px;">
+                <p style="font-size:13px; margin-bottom:0; font-weight:bold;">Results:</p>
+                <p style="font-size:12px; margin-top:8px; line-height:1.5;">
+                    ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
+                </p>
+            </div>
+        `;
     }
-  
+
     function antibiogramTables() {
-      if (!positive || nIso === 0) return '';
-      const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
-      return isolates.map((iso, idx) => {
-        const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || '').toString().trim() !== '');
-        if (!rows.length) return '';
-        const label = (nIso > 1) ? `<div style="margin-bottom:4px; font-weight:bold;">${labels[idx]}</div>` : '';
-        const head = `
-          <div style="font-weight:bold;">ANTIBIOGRAM (S=Sensitive, R=Resistant, I=Intermediate)</div>
-          <div style="margin:2px 0 6px 0; font-weight:bold;">Antibiotics Sensitivity Pattern of Isolates</div>
-        `;
-        const table = `
-          <table class="tight-table" style="width:100%; table-layout:fixed;">
-            <thead>
-              <tr>
-                <th style="text-align:left; padding:3px 0; width:70%;">Antibiotics</th>
-                <th style="text-align:left; padding:3px 0; width:30%;">S/I/R</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map(r => `
-                <tr>
-                  <td style="padding:3px 0;">${r.antibiotic || ''}</td>
-                  <td style="padding:3px 0;">${r.sir || ''}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
-        return `${label}${head}${table}`;
-      }).join('<div style="height:4mm;"></div>');
+        if (!positive || nIso === 0) return '';
+        const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+        return isolates.map((iso, idx) => {
+            const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || '').toString().trim() !== '');
+            if (!rows.length) return '';
+            const label = (nIso > 1) ? `<div style="margin-top:20px; font-weight:bold; font-size:13px;">${labels[idx]}</div>` : '';
+            const head = `
+                <div style="margin-top:20px; font-size:13px; font-weight:bold;">
+                    ANTIBIOGRAM (S=Sensitive, R=Resistant, I=Intermediate)
+                </div>
+                <div style="margin:8px 0 12px 0; font-size:12px; font-weight:bold;">
+                    Antibiotics Sensitivity Pattern of Isolates
+                </div>
+            `;
+            const table = `
+                <table style="width:100%; table-layout:fixed; font-size:12px; margin-top:8px; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; padding:8px; background:#f6f6f6; font-weight:bold; width:70%;">Antibiotics</th>
+                            <th style="text-align:left; padding:8px; background:#f6f6f6; font-weight:bold; width:30%;">S/I/R</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map(r => `
+                            <tr>
+                                <td style="padding:8px;">${r.antibiotic || ''}</td>
+                                <td style="padding:8px;">${r.sir || ''}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            return `${label}${head}${table}`;
+        }).join('<div style="height:15px;"></div>');
     }
-  
+
     const disclaimer = `
-      <div style="font-style:italic;">
-        <strong>*Disclaimer:</strong> This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
-      </div>
+        <div style="margin-top:40px;">
+            <p style="font-size:12px; margin:0; font-weight:bold;">
+                <em>*Disclaimer:</em>
+            </p>
+            <p style="font-size:12px; margin-top:4px; line-height:1.4;">
+                This report for research purpose only and is subjected to change based on further analysis or additional diagnostic information.
+            </p>
+        </div>
     `;
-  
+
     const signatures = `
-      <div class="sig-columns">
-        <div class="sig-card sig-left">
-          <div class="sig-image-wrap">
-            <img src="${reviewerSign}" alt="Reviewed by signature" class="sig-image"/>
-          </div>
-          <div class="sig-caption">
-            <strong>Reviewed by</strong><br/>
-            Arpita Shyama Deb, M.Sc<br/>
-            Senior Research Officer,<br/>
-            Virology laboratory<br/>
-            Infectious Diseases Division,<br/>
-            icddr,b
-          </div>
-        </div>
-        <div class="sig-card sig-right">
-          <div class="sig-image-wrap">
-            <img src="${approverSign}" alt="Approved by signature" class="sig-image"/>
-          </div>
-          <div class="sig-caption">
-            <strong>Approved by</strong><br/>
-            Muntasir Alam, PhD<br/>
-            Assistant Scientist<br/>
-            Virology laboratory<br/>
-            Infectious Diseases Division,<br/>
-            icddr,b
-          </div>
-        </div>
-      </div>
+        <table style="width:100%; border-collapse:collapse; margin-top:30px; font-size:12px;">
+            <tr>
+                <td style="width:50%; vertical-align:top; padding-right:20px;">
+                    <div style="height:70px; margin-bottom:10px;">
+                        <img src="${reviewerSign}" alt="Reviewed by signature" style="height:60px;"/>
+                    </div>
+                    <div style="border-top:1px solid #333; padding-top:8px;">
+                        <strong>Reviewed by</strong><br/>
+                        Arpita Shyama Deb, M.Sc<br/>
+                        Senior Research Officer,<br/>
+                        Virology laboratory<br/>
+                        Infectious Diseases Division,<br/>
+                        icddr,b
+                    </div>
+                </td>
+                <td style="width:50%; vertical-align:top; padding-left:20px;">
+                    <div style="height:70px; margin-bottom:10px;">
+                        <img src="${approverSign}" alt="Approved by signature" style="height:60px;"/>
+                    </div>
+                    <div style="border-top:1px solid #333; padding-top:8px;">
+                        <strong>Approved by</strong><br/>
+                        Muntasir Alam, PhD<br/>
+                        Assistant Scientist<br/>
+                        Virology laboratory<br/>
+                        Infectious Diseases Division,<br/>
+                        icddr,b
+                    </div>
+                </td>
+            </tr>
+        </table>
     `;
-  
+
     const html = `<!doctype html>
     <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          @page { size: A4 portrait; margin: 0; } /* Absolute mm placement from page edges */
-          html, body {
-            width: 210mm; height: 297mm; margin: 0; padding: 0;
-            font-family: 'Times New Roman', Times, serif; font-size: 12px; color: #000;
-          }
-          /* Global tighter line-height for tables and small paddings to approximate ~1.15 */
-          .tight-table, .tight-table * { line-height: 1.15; }
-          .tight-table th, .tight-table td { border: none; }
-  
-          .page {
-            position: relative;
-            width: 210mm; height: 297mm;
-            overflow: hidden;
-          }
-  
-          /* Logos: 5mm from top; 6mm from left/right; height = 4mm so they end at 9mm */
-          .logo-left {
-            position: absolute; top: 5mm; left: 6mm; height: 4mm; width: auto;
-          }
-          .logo-right {
-            position: absolute; top: 5mm; right: 6mm; height: 4mm; width: auto;
-          }
-  
-          /* Protocol title: after 11mm from top, 10mm left/right */
-          .protocol-title {
-            position: absolute; top: 11mm; left: 10mm; right: 10mm;
-            font-size: 13px; line-height: 1.3;
-            white-space: pre-line;
-          }
-  
-          /* Patient/specimen: after 21mm from top, 10mm left/right */
-          .patient-specimen {
-            position: absolute; top: 21mm; left: 10mm; right: 10mm;
-          }
-  
-          /* Results: from 40mm top with 10mm margins */
-          .results {
-            position: absolute; top: 40mm; left: 10mm; right: 10mm;
-          }
-  
-          /* Disclaimer: after 80mm from top with 10mm margins */
-          .disclaimer {
-            position: absolute; top: 80mm; left: 10mm; right: 10mm;
-            line-height: 1.2;
-          }
-  
-          /* Signature band: contained between disclaimer and footer:
-             Start ~95mm to give room for disclaimer; end 15mm from bottom
-             (5mm footer baseline + 10mm buffer to avoid overlap) */
-          .signatures-band {
-            position: absolute; left: 10mm; right: 10mm; top: 95mm; bottom: 15mm;
-            display: flex; flex-direction: column; justify-content: center;
-          }
-          .sig-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10mm; /* visual spacing between reviewer/approver cards */
-          }
-          .sig-card {
-            display: flex; flex-direction: column; align-items: center;
-          }
-          /* Keep margins: reviewer area respects 10mm left by container; approver respects 10mm right */
-          .sig-left { justify-self: start; }
-          .sig-right { justify-self: end; }
-  
-          .sig-image-wrap { height: 18mm; display: flex; align-items: center; justify-content: center; }
-          .sig-image { max-height: 16mm; width: auto; }
-  
-          .sig-caption {
-            margin-top: 2mm;
-            padding-top: 1mm;
-            border-top: 0.2mm solid #333;
-            text-align: center;
-            line-height: 1.2;
-          }
-  
-          /* Footer texts: 5mm from bottom; 10mm from left/right */
-          .footer-left {
-            position: fixed; left: 10mm; bottom: 5mm;
-            font-size: 10px; font-weight: bold;
-          }
-          .footer-right {
-            position: fixed; right: 10mm; bottom: 5mm;
-            font-size: 10px; font-weight: bold;
-          }
-  
-          /* Ensure print rendering doesn't add margins */
-          @media print {
-            html, body, .page { width: 210mm; height: 297mm; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="page">
-          <!-- Logos -->
-          <img class="logo-left" src="${headerLeftLogo}" alt="icddr,b logo"/>
-          <img class="logo-right" src="${headerRightLogo}" alt="Shishu logo"/>
-  
-          <!-- Protocol Title -->
-          <div class="protocol-title">
-  Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance
-  Principal Investigator: Mohammad Monir Hossain
-          </div>
-  
-          <!-- Patient / Specimen -->
-          <div class="patient-specimen">
-            ${patientSpecimen}
-          </div>
-  
-          <!-- Results -->
-          <div class="results">
-            ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
-            ${mode !== 'neg' ? antibiogramTables() : ''}
-          </div>
-  
-          <!-- Disclaimer at 80mm -->
-          <div class="disclaimer">
-            ${disclaimer}
-          </div>
-  
-          <!-- Signatures: between disclaimer and footer -->
-          <div class="signatures-band">
-            ${signatures}
-          </div>
-  
-          <!-- Footer texts (always 5mm from bottom; 10mm from edges) -->
-          <div class="footer-left">Protocol No: PR-24111</div>
-          <div class="footer-right">ERC Approval Date: 3 February 2025</div>
-        </div>
-      </body>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                @page {
+                    size: A4 portrait;
+                    margin: 15mm 20mm 20mm 20mm;
+                    @top-left {
+                        content: url("${headerLeftLogo}");
+                        width: 60px;
+                        height: auto;
+                        margin-bottom: 5px;
+                        margin-top: 5px;
+                    }
+                    @top-right {
+                        content: url("${headerRightLogo}");
+                        width: 60px;
+                        height: auto;
+                        margin-bottom: 5px;
+                        margin-top: 5px;
+                    }
+                    @top-center {
+                        content: "Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance\\A Principal Investigator: Mohammad Monir Hossain";
+                        font-size: 13px;
+                        font-family: 'Times New Roman', Times, serif;
+                        text-align: left;
+                        line-height: 1.3;
+                        margin: 5px 0 0 70px;
+                        white-space: pre-line;
+                        font-weight: normal;
+                    }
+                    @bottom-left {
+                        content: "Protocol No: PR-24111";
+                        font-size: 10px;
+                        font-weight: bold;
+                        font-family: 'Times New Roman', Times, serif;
+                    }
+                    @bottom-right {
+                        content: "ERC Approval Date: 3 February 2025";
+                        font-size: 10px;
+                        font-weight: bold;
+                        font-family: 'Times New Roman', Times, serif;
+                    }
+                }
+                
+                body {
+                    font-family: 'Times New Roman', Times, serif;
+                    color: #000;
+                    margin: 0;
+                    padding: 0;
+                    font-size: 12px;
+                    line-height: 1.4;
+                }
+                
+                .page-content {
+                    padding-top: 60px; /* Space for header */
+                    padding-bottom: 30px; /* Space for footer */
+                    padding-left: 70px; /* Align with protocol title */
+                    min-height: calc(100vh - 90px);
+                    display: flex;
+                    flex-direction: column;
+                }
+                
+                .main-content {
+                    flex: 1;
+                }
+                
+                .footer-section {
+                    margin-top: auto;
+                    page-break-inside: avoid;
+                }
+                
+                /* Hide original header elements since they're in page margins */
+                .original-header {
+                    display: none;
+                }
+                
+                @media print {
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    
+                    .page-content {
+                        padding-top: 60px;
+                        padding-bottom: 30px;
+                    }
+                    
+                    .footer-section {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+                    
+                    .signatures-section {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="page-content">
+                <div class="main-content">
+                    <!-- Original header (hidden, now in page margins) -->
+                    <div class="original-header">
+                        <img src="${headerLeftLogo}" alt="icddr,b logo"/>
+                        <img src="${headerRightLogo}" alt="Shishu logo"/>
+                    </div>
+                    
+                    ${patientSpecimen}
+                    ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
+                    ${mode !== 'neg' ? antibiogramTables() : ''}
+                </div>
+                
+                <div class="footer-section">
+                    ${disclaimer}
+                    <div class="signatures-section">
+                        ${signatures}
+                    </div>
+                </div>
+            </div>
+        </body>
     </html>`;
-  
+
     openPrintable(html);
-  }
-  
+}
 
   
   function updateAndSave(updater){
