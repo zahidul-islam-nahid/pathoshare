@@ -1081,7 +1081,7 @@ const ReportDetail = () => {
                 
                 /* Main content container - flows naturally */
                 .page-content {
-                    padding: 65mm 10mm 20mm 10mm; /* top, right, bottom, left */
+                    padding: 34mm 10mm 20mm 10mm; /* top, right, bottom, left */
                     min-height: calc(100vh - 85mm); /* Adjust for header and footer space */
                 }
                 
