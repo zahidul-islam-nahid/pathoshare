@@ -833,9 +833,6 @@ const ReportDetail = () => {
   }
 
   function exportPDF() {
-    const reportingDate = (report?.lab?.finalReportDate && String(report.lab.finalReportDate).trim())
-        ? new Date(report.lab.finalReportDate).toLocaleDateString()
-        : new Date().toLocaleDateString();
     const culture = report?.lab?.cultureResult || 'Pending';
     const isolates = Array.isArray(report?.lab?.isolates) ? report.lab.isolates : [];
     const positive = culture === 'Positive';
@@ -860,13 +857,11 @@ const ReportDetail = () => {
                     <div style="margin-bottom:8px;"><strong>Case ID:</strong> ${report?.patient?.patientId || ''}</div>
                     <div style="margin-bottom:8px;"><strong>Age:</strong> ${[report?.patient?.age, report?.patient?.ageUnit].filter(Boolean).join(' ') || ''}</div>
                     <div style="margin-bottom:8px;"><strong>Sex:</strong> ${report?.patient?.sex || ''}</div>
-                    <div><strong>Phase:</strong> ${report?.patient?.phase || ''}</div>
                 </td>
                 <td style="vertical-align:top; border:1px solid #333; padding:12px;">
                     <div style="margin-bottom:8px;"><strong>Specimen Type:</strong> ${report?.patient?.specimenType || ''}</div>
                     <div style="margin-bottom:8px;"><strong>Collection Date:</strong> ${report?.patient?.collectionDate || ''}</div>
-                    <div style="margin-bottom:8px;"><strong>Reporting Date:</strong> ${reportingDate}</div>
-                    <div><strong>Location:</strong> ${report?.patient?.location || ''}</div>
+                    <div style="margin-bottom:8px;"><strong>Reporting Date:</strong> ${report?.lab?.finalReportDate || ''}</div>
                 </td>
             </tr>
         </table>
@@ -914,7 +909,7 @@ const ReportDetail = () => {
         if (!positive || nIso === 0) return '';
         const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
         return isolates.map((iso, idx) => {
-            const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || r?.mic || '').toString().trim() !== '');
+            const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || '').toString().trim() !== '');
             if (!rows.length) return '';
             const label = (nIso > 1) ? `<div style="margin-top:20px; font-weight:bold; font-size:13px;">${labels[idx]}</div>` : '';
             const head = `
@@ -926,20 +921,18 @@ const ReportDetail = () => {
                 </div>
             `;
             const table = `
-                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;">
+                <table style="width:100%; table-layout:fixed; font-size:12px; margin-top:8px; border-collapse:collapse;">
                     <thead>
                         <tr>
-                            <th style="text-align:left; padding:8px; background:#f6f6f6; border:1px solid #333; font-weight:bold;">Antibiotics</th>
-                            <th style="text-align:left; padding:8px; background:#f6f6f6; border:1px solid #333; font-weight:bold;">S/I/R</th>
-                            <th style="text-align:left; padding:8px; background:#f6f6f6; border:1px solid #333; font-weight:bold;">MIC</th>
+                            <th style="text-align:left; padding:8px; background:#f6f6f6; font-weight:bold; width:70%;">Antibiotics</th>
+                            <th style="text-align:left; padding:8px; background:#f6f6f6; font-weight:bold; width:30%;">S/I/R</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${rows.map(r => `
                             <tr>
-                                <td style="border:1px solid #333; padding:8px;">${r.antibiotic || ''}</td>
-                                <td style="border:1px solid #333; padding:8px;">${r.sir || ''}</td>
-                                <td style="border:1px solid #333; padding:8px;">${r.mic || ''}</td>
+                                <td style="padding:8px;">${r.antibiotic || ''}</td>
+                                <td style="padding:8px;">${r.sir || ''}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -1006,20 +999,22 @@ const ReportDetail = () => {
                         width: 60px;
                         height: auto;
                         margin-bottom: 5px;
+                        margin-top: 5px;
                     }
                     @top-right {
                         content: url("${headerRightLogo}");
                         width: 60px;
                         height: auto;
                         margin-bottom: 5px;
+                        margin-top: 5px;
                     }
                     @top-center {
                         content: "Protocol Title: Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance\\A Principal Investigator: Mohammad Monir Hossain";
-                        font-size: 11px;
+                        font-size: 13px;
                         font-family: 'Times New Roman', Times, serif;
-                        text-align: center;
+                        text-align: left;
                         line-height: 1.3;
-                        margin: 0 15px;
+                        margin: 5px 0 0 70px;
                         white-space: pre-line;
                         font-weight: normal;
                     }
@@ -1049,6 +1044,7 @@ const ReportDetail = () => {
                 .page-content {
                     padding-top: 60px; /* Space for header */
                     padding-bottom: 30px; /* Space for footer */
+                    padding-left: 70px; /* Align with protocol title */
                     min-height: calc(100vh - 90px);
                     display: flex;
                     flex-direction: column;
