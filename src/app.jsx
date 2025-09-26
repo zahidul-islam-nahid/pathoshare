@@ -846,7 +846,7 @@ const ReportDetail = () => {
     const approverSign = '/images/muntasir.jpeg';
 
     const patientSpecimen = `
-        <table style="width:100%; border-collapse:collapse; margin:0; font-size:12px; line-height:1.15; border:1px solid #333;">
+        <table style="width:100%; border-collapse:collapse; margin:0; font-size:16px; line-height:1.15; border:1px solid #333;">
             <tr>
                 <th style="text-align:left; padding:4px 8px; width:50%; background:#f6f6f6; border-bottom:1px solid #333; border-right:1px solid #333; font-weight:bold; line-height:1.15;">Patient Information</th>
                 <th style="text-align:left; padding:4px 8px; width:50%; background:#f6f6f6; border-bottom:1px solid #333; font-weight:bold; line-height:1.15;">Specimen Information</th>
@@ -869,7 +869,7 @@ const ReportDetail = () => {
 
     const resultNegative = `
         <div>
-            <p style="font-size:13px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
+            <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
             <p style="font-size:12px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
@@ -883,7 +883,7 @@ const ReportDetail = () => {
             const name = iso?.species || '';
             return `
                 <div>
-                    <p style="font-size:13px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
+                    <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
                     <p style="font-size:12px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
@@ -897,7 +897,7 @@ const ReportDetail = () => {
         }).filter(Boolean);
         return `
             <div>
-                <p style="font-size:13px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
+                <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
                 <p style="font-size:12px; margin:0; line-height:1.15;">
                     ${lines.join(' and ')} isolated in aerobic condition at 35±2°C.
                 </p>
@@ -911,9 +911,9 @@ const ReportDetail = () => {
         return isolates.map((iso, idx) => {
             const rows = (iso?.ast?.rows || []).filter(r => (r?.sir || '').toString().trim() !== '');
             if (!rows.length) return '';
-            const label = (nIso > 1) ? `<div style="margin:12px 0 6px 0; font-weight:bold; font-size:13px; line-height:1.15;">${labels[idx]}</div>` : '';
+            const label = (nIso > 1) ? `<div style="margin:12px 0 6px 0; font-weight:bold; font-size:16px; line-height:1.15;">${labels[idx]}</div>` : '';
             const head = `
-                <div style="margin:12px 0 4px 0; font-size:13px; font-weight:bold; line-height:1.15;">
+                <div style="margin:12px 0 4px 0; font-size:16px; font-weight:bold; line-height:1.15;">
                     ANTIBIOGRAM (S=Sensitive, R=Resistant, I=Intermediate)
                 </div>
                 <div style="margin:0 0 8px 0; font-size:12px; font-weight:bold; line-height:1.15;">
@@ -921,7 +921,7 @@ const ReportDetail = () => {
                 </div>
             `;
             const table = `
-                <table style="width:100%; table-layout:fixed; font-size:12px; margin:0; border-collapse:collapse; line-height:1.15;">
+                <table style="width:100%; table-layout:fixed; font-size:16px; margin:0; border-collapse:collapse; line-height:1.15;">
                     <thead>
                         <tr>
                             <th style="text-align:left; padding:4px 8px; background:#f6f6f6; font-weight:bold; width:70%; line-height:1.15; border:none;">Antibiotics</th>
@@ -954,7 +954,7 @@ const ReportDetail = () => {
     `;
 
     const signatures = `
-        <table style="width:100%; border-collapse:collapse; margin:0; font-size:12px; line-height:1.15;">
+        <table style="width:100%; border-collapse:collapse; margin:0; font-size:16px; line-height:1.15;">
             <tr>
                 <td style="width:50%; vertical-align:top; padding-right:15px;">
                     <div style="height:50px; margin-bottom:6px;">
@@ -1001,7 +1001,7 @@ const ReportDetail = () => {
                     color: #000;
                     margin: 0;
                     padding: 0;
-                    font-size: 12px;
+                    font-size: 16px;
                     line-height: 1.15;
                 }
                 
@@ -1030,7 +1030,7 @@ const ReportDetail = () => {
                     top: 17mm;
                     left: 10mm;
                     right: 10mm;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-family: 'Times New Roman', Times, serif;
                     text-align: justify;
                     line-height: 1;
@@ -1044,7 +1044,7 @@ const ReportDetail = () => {
                     position: fixed;
                     bottom: 5mm;
                     left: 10mm;
-                    font-size: 10px;
+                    font-size: 16px;
                     font-weight: normal;
                     font-family: 'Times New Roman', Times, serif;
                     z-index: 1000;
@@ -1054,7 +1054,7 @@ const ReportDetail = () => {
                     position: fixed;
                     bottom: 5mm;
                     right: 10mm;
-                    font-size: 10px;
+                    font-size: 16px;
                     font-weight: bold;
                     font-family: 'Times New Roman', Times, serif;
                     z-index: 1000;
@@ -1069,7 +1069,7 @@ const ReportDetail = () => {
                 
                 .patient-specimen-section {
                     position: absolute;
-                    top: 45mm;
+                    top: 35mm;
                     left: 10mm;
                     right: 10mm;
                     width: calc(100% - 20mm);
