@@ -993,7 +993,7 @@ const ReportDetail = () => {
             <style>
                 @page {
                     size: A4 portrait;
-                    margin: 15mm 20mm 20mm 20mm;
+                    margin: 20mm 10mm 10mm 10mm;
                     @top-left {
                         content: url("${headerLeftLogo}");
                         width: 60px;
@@ -1014,7 +1014,7 @@ const ReportDetail = () => {
                         font-family: 'Times New Roman', Times, serif;
                         text-align: left;
                         line-height: 1.3;
-                        margin: 5px 0 0 70px;
+                        margin: 10mm 10mm 0 10mm;
                         white-space: pre-line;
                         font-weight: normal;
                     }
