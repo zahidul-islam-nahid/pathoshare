@@ -1068,7 +1068,7 @@ const ReportDetail = () => {
                 /* Disclaimer positioned 81mm from the bottom */
                 .disclaimer-section {
                     position: absolute;
-                    bottom: 70mm; /* 81 mm from bottom of page */
+                    bottom: 65mm; /* 81 mm from bottom of page */
                     left: 10mm;   /* optional left margin */
                     right: 10mm;  /* optional right margin */
                     line-height: 1.2;
