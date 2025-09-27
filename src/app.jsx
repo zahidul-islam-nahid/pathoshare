@@ -986,206 +986,145 @@ const ReportDetail = () => {
         </table>
     `;
 
-    const html = `<!doctype html>
-    <html>
-        <head>
-            <meta charset="utf-8">
-            <style>
-                @page {
-                    size: A4 portrait;
-                    margin: 0 0 0 0; /* top, right, bottom, left */
-                }
-                
-                body {
-                    font-family: 'Times New Roman', Times, serif;
-                    color: #000;
-                    margin: 0;
-                    padding: 0;
-                    font-size: 16px;
-                    line-height: 1.15;
-                }
-                
-                /* Fixed positioned logos */
-                .header-logo-left {
-                    position: fixed;
-                    top: 2mm;
-                    left: 10mm;
-                    width: auto;
-                    height: auto;
-                    z-index: 1000;
-                }
-                
-                .header-logo-right {
-                    position: fixed;
-                    top: 2mm;
-                    right: 10mm;
-                    width: auto;
-                    height: auto;
-                    z-index: 1000;
-                }
-                
-                .protocol-header {
-                    position: fixed;
-                    top: 19mm;
-                    left: 10mm;
-                    right: 10mm;
-                    font-size: 16px;
-                    font-family: 'Times New Roman', Times, serif;
-                    text-align: justify;
-                    font-weight: normal;
-                    z-index: 1000;
-                    word-wrap: break-word;
-                }
+    // Helper: split table into page-sized chunks
+    function splitTableForPrint(tableHTML, maxHeightPx) {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = tableHTML;
+      document.body.appendChild(tempDiv);
+      const table = tempDiv.querySelector('table');
+      if (!table) return [tableHTML];
 
-                .protocol-header .title-line,
-                .protocol-header .pi-line {
-                    display: block;
-                    line-height: 1;
-                    margin-bottom: 0.5em; /* Control spacing between lines */
-                }
+      const rows = Array.from(table.querySelectorAll('tr'));
+      const pages = [];
+      let currentTable = table.cloneNode(false); // table skeleton
+      let accumulatedHeight = 0;
 
-                /* Fixed positioned footer */
-                .footer-protocol {
-                    position: fixed;
-                    bottom: 5mm;
-                    left: 10mm;
-                    font-size: 16px;
-                    font-weight: normal;
-                    font-family: 'Times New Roman', Times, serif;
-                    z-index: 1000;
-                }
-                
-                .footer-erc {
-                    position: fixed;
-                    bottom: 5mm;
-                    right: 10mm;
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-family: 'Times New Roman', Times, serif;
-                    z-index: 1000;
-                }
-                
-                /* Disclaimer positioned 81mm from the bottom */
-                .disclaimer-section {
-                    position: absolute;
-                    bottom: 65mm; /* 81 mm from bottom of page */
-                    left: 10mm;   /* optional left margin */
-                    right: 10mm;  /* optional right margin */
-                    line-height: 1.2;
-                    page-break-inside: avoid;
-                    break-inside: avoid;
-                }
+      rows.forEach(row => {
+          const rowClone = row.cloneNode(true);
+          currentTable.appendChild(rowClone);
+          const rowHeight = rowClone.offsetHeight;
+          if (accumulatedHeight + rowHeight > maxHeightPx) {
+              // remove last row from current table
+              currentTable.removeChild(rowClone);
+              pages.push(currentTable.outerHTML);
+              currentTable = table.cloneNode(false);
+              currentTable.appendChild(rowClone);
+              accumulatedHeight = rowHeight;
+          } else {
+              accumulatedHeight += rowHeight;
+          }
+      });
+      if (currentTable.children.length > 0) pages.push(currentTable.outerHTML);
+      document.body.removeChild(tempDiv);
+      return pages;
+  }
 
-                /* Signatures positioned below the disclaimer, up to bottom of page */
-                .signatures-section {
-                    position: absolute;
-                    bottom: 12mm;  /* distance from bottom of page */
-                    left: 10mm;   /* align with left margin */
-                    right: 10mm;  /* align with right margin */
-                    top: auto;    /* will occupy space between bottom and disclaimer */
-                    page-break-inside: avoid;
-                    break-inside: avoid;
-                }
-                
-                /* Main content container - flows naturally */
-                .page-content {
-                    padding: 39mm 10mm 20mm 10mm; /* top, right, bottom, left */
-                    min-height: calc(100vh - 50mm); /* Adjust for header and footer space */
-                }
-                
-                /* Content sections - natural flow */
-                .content-section {
-                    margin-bottom: 20px;
-                }
-                
-                .content-section:last-child {
-                    margin-bottom: 0;
-                }
-                
-                /* Bottom sections that should appear at the end */
-                .bottom-section {
-                    margin-top: auto;
-                }
-                
-                @media print {
-                    body {
-                        margin: 0;
-                        padding: 0;
-                    }
-                    
-                    /* Ensure disclaimer and signatures appear at bottom and don't break awkwardly */
-                    .disclaimer-section,
-                    .signatures-section {
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                    }
-                    
-                    /* Keep disclaimer and signatures together at the end */
-                    .bottom-sections {
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        page-break-before: avoid;
-                    }
-                    
-                    /* Push disclaimer and signatures to bottom if there's space */
-                    .page-content {
-                        display: flex;
-                        flex-direction: column;
-                        min-height: calc(100vh - 85mm);
-                    }
-                    
-                    .content-sections {
-                        flex: 1;
-                    }
-                    
-                    .bottom-sections {
-                        margin-top: auto;
-                        flex-shrink: 0;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <!-- Fixed positioned header elements -->
-            <img src="${headerLeftLogo}" alt="icddr,b logo" class="header-logo-left"/>
-            <img src="${headerRightLogo}" alt="Shishu logo" class="header-logo-right"/>
-            <div class="protocol-header">
-                <span class="title-line"><strong>Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance</span>
-                <span class="pi-line"><strong>Principal Investigator:</strong> Mohammad Monir Hossain</span>
-            </div>
-            
-            <!-- Fixed positioned footer elements -->
-            <div class="footer-protocol">Protocol No: PR-24111</div>
-            <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
-            
-            <!-- Main content that flows naturally -->
-            <div class="page-content">
-                <div class="content-sections">
-                    <div class="content-section">
-                        ${patientSpecimen}
-                    </div>
-                    
-                    <div class="content-section">
-                        ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
-                        ${mode !== 'neg' ? antibiogramTables() : ''}
-                    </div>
-                </div>
-                
-                <!-- Bottom sections - will appear at end of content flow -->
-                <div class="bottom-sections">
-                    <div class="disclaimer-section">
-                        ${disclaimer}
-                    </div>
-                    
-                    <div class="signatures-section">
-                        ${signatures}
-                    </div>
-                </div>
-            </div>
-        </body>
-    </html>`;
+  // Build content HTML with table splitting
+  function buildContentHTML() {
+      const sections = [];
+      // Patient/specimen
+      sections.push(`<div class="content-section">${patientSpecimen}</div>`);
+      // Results
+      sections.push(`<div class="content-section">${mode === 'neg' ? resultNegative : isolateHeaderLine()}</div>`);
 
-    openPrintable(html);
+      // Antibiogram tables
+      if (mode !== 'neg') {
+          isolates.forEach(iso => {
+              const tableHTML = antibiogramTables.call({isolates: [iso]});
+              const pageHeightPx = (297 - 40 - 60) * 3.78; // first page remaining space
+              const tablePages = splitTableForPrint(tableHTML, pageHeightPx);
+              tablePages.forEach(tp => sections.push(`<div class="content-section">${tp}</div>`));
+          });
+      }
+      return sections;
+  }
+
+  const contentSections = buildContentHTML();
+
+  // Determine pages dynamically
+  const mmToPx = 3.78;
+  const pageHeightPx = 297 * mmToPx;
+  const firstPageMaxHeight = pageHeightPx - (40 + 60) * mmToPx; // 40 mm top, 60 mm bottom
+  const intermediatePageMaxHeight = pageHeightPx - (40 + 10) * mmToPx;
+
+  const pages = [];
+  let currentPage = '';
+  let accumulatedHeight = 0;
+
+  const tempContainer = document.createElement('div');
+  document.body.appendChild(tempContainer);
+
+  contentSections.forEach(sectionHTML => {
+      tempContainer.innerHTML = sectionHTML;
+      const sectionHeight = tempContainer.offsetHeight;
+      if (pages.length === 0) {
+          // first page
+          if (accumulatedHeight + sectionHeight > firstPageMaxHeight) {
+              pages.push(currentPage);
+              currentPage = '';
+              accumulatedHeight = 0;
+          }
+      } else {
+          // intermediate pages
+          if (accumulatedHeight + sectionHeight > intermediatePageMaxHeight) {
+              pages.push(currentPage);
+              currentPage = '';
+              accumulatedHeight = 0;
+          }
+      }
+      currentPage += sectionHTML;
+      accumulatedHeight += sectionHeight;
+  });
+  pages.push(currentPage);
+  document.body.removeChild(tempContainer);
+
+  // Build final HTML
+  let pagesHTML = '';
+  pages.forEach((pageContent, idx) => {
+      const isLastPage = idx === pages.length - 1;
+      let bottomHTML = '';
+      if (isLastPage) {
+          bottomHTML = `
+              <div class="disclaimer-section">${disclaimer}</div>
+              <div class="signatures-section">${signatures}</div>
+          `;
+      }
+      pagesHTML += `<div class="page">${pageContent}${bottomHTML}</div>`;
+  });
+
+  const html = `<!doctype html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <style>
+          @page { size: A4 portrait; margin: 0; }
+          body { font-family:'Times New Roman', Times, serif; margin:0; padding:0; }
+          .page { width:210mm; min-height:297mm; position:relative; page-break-after:always; }
+          .header-logo-left { position: fixed; top:2mm; left:10mm; z-index:1000; }
+          .header-logo-right { position: fixed; top:2mm; right:10mm; z-index:1000; }
+          .protocol-header { position: fixed; top:19mm; left:10mm; right:10mm; font-size:16px; text-align:justify; word-wrap: break-word; z-index:1000; }
+          .protocol-header .title-line, .protocol-header .pi-line { display:block; line-height:1; margin-bottom:0.5em; }
+          .footer-protocol { position: fixed; bottom:5mm; left:10mm; font-size:16px; }
+          .footer-erc { position: fixed; bottom:5mm; right:10mm; font-size:16px; font-weight:bold; }
+          .disclaimer-section { position:absolute; bottom:60mm; left:10mm; right:10mm; line-height:1.2; page-break-inside:avoid; }
+          .signatures-section { position:absolute; bottom:12mm; left:10mm; right:10mm; page-break-inside:avoid; }
+          .content-section { margin-bottom:8px; }
+      </style>
+  </head>
+  <body>
+      <img src="${headerLeftLogo}" class="header-logo-left"/>
+      <img src="${headerRightLogo}" class="header-logo-right"/>
+      <div class="protocol-header">
+          <span class="title-line"><strong>Protocol Title:</strong> Profiling Neonatal Sepsis in Bangladesh: Insights into Prevalence, Microbial Burden, and Antimicrobial Resistance</span>
+          <span class="pi-line"><strong>Principal Investigator:</strong> Mohammad Monir Hossain</span>
+      </div>
+      <div class="footer-protocol">Protocol No: PR-24111</div>
+      <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
+      ${pagesHTML}
+  </body>
+  </html>`;
+
+  openPrintable(html);
 }
 
   return (
