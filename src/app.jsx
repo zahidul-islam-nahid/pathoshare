@@ -870,7 +870,7 @@ const ReportDetail = () => {
     const resultNegative = `
         <div>
             <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-            <p style="font-size:12px; margin:0; line-height:1.15;">
+            <p style="font-size:16px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
         </div>
@@ -884,7 +884,7 @@ const ReportDetail = () => {
             return `
                 <div>
                     <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                    <p style="font-size:12px; margin:0; line-height:1.15;">
+                    <p style="font-size:16px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
                 </div>
@@ -921,7 +921,7 @@ const ReportDetail = () => {
                 </div>
             `;
             const table = `
-                <table style="width:100%; table-layout:fixed; font-size:16px; margin:0; border-collapse:collapse; line-height:1.15;">
+                <table class="antibiogram-table" style="width:100%; table-layout:fixed; font-size:16px; margin:0; border-collapse:collapse; line-height:1.15; page-break-inside: avoid;">
                     <thead>
                         <tr>
                             <th style="text-align:left; padding:4px 8px; background:#f6f6f6; font-weight:bold; width:70%; line-height:1.15; border:none;">Antibiotics</th>
@@ -938,12 +938,12 @@ const ReportDetail = () => {
                     </tbody>
                 </table>
             `;
-            return `${label}${head}${table}`;
+            return `<div class="antibiogram-section" style="page-break-inside: avoid;">${label}${head}${table}</div>`;
         }).join('<div style="height:8px;"></div>');
     }
 
     const disclaimer = `
-        <div>
+        <div class="disclaimer-content">
             <p style="font-size:12px; margin:0 0 3px 0; font-weight:bold; line-height:1.15;">
                 <em>*Disclaimer:</em>
             </p>
@@ -954,7 +954,7 @@ const ReportDetail = () => {
     `;
 
     const signatures = `
-        <table style="width:100%; border-collapse:collapse; margin:0; font-size:16px; line-height:1.15;">
+        <table class="signatures-content" style="width:100%; border-collapse:collapse; margin:0; font-size:16px; line-height:1.15;">
             <tr>
                 <td style="width:50%; vertical-align:top; padding-right:15px;">
                     <div style="height:50px; margin-bottom:6px;">
@@ -993,154 +993,311 @@ const ReportDetail = () => {
             <style>
                 @page {
                     size: A4 portrait;
-                    margin: 0 0 0 0; /* top, right, bottom, left */
+                    margin: 40mm 10mm 10mm 10mm; /* Standard margins for all pages */
+                }
+                
+                @page :last {
+                    margin: 40mm 10mm 60mm 10mm; /* Extra bottom space on last page for disclaimer/signatures */
                 }
                 
                 body {
                     font-family: 'Times New Roman', Times, serif;
-                    color: #000;
+                    color: #000 !important;
+                    background: white !important;
                     margin: 0;
                     padding: 0;
                     font-size: 16px;
                     line-height: 1.15;
+                    orphans: 3;
+                    widows: 3;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
                 }
                 
-                /* Fixed positioned logos */
+                /* Print-optimized header elements */
                 .header-logo-left {
-                    position: fixed;
-                    top: 2mm;
-                    left: 10mm;
+                    position: running(header-left);
                     width: auto;
-                    height: auto;
-                    z-index: 1000;
+                    height: 15mm;
+                    max-width: 40mm;
                 }
                 
                 .header-logo-right {
-                    position: fixed;
-                    top: 2mm;
-                    right: 10mm;
+                    position: running(header-right);
                     width: auto;
-                    height: auto;
-                    z-index: 1000;
+                    height: 15mm;
+                    max-width: 40mm;
                 }
                 
                 .protocol-header {
-                    position: fixed;
-                    top: 19mm;
-                    left: 10mm;
-                    right: 10mm;
+                    position: running(header-center);
                     font-size: 16px;
                     font-family: 'Times New Roman', Times, serif;
                     text-align: justify;
                     font-weight: normal;
-                    z-index: 1000;
                     word-wrap: break-word;
+                    margin: 0 50mm; /* Space for logos */
                 }
 
                 .protocol-header .title-line,
                 .protocol-header .pi-line {
                     display: block;
-                    line-height: 1;
-                    margin-bottom: 0.5em; /* Control spacing between lines */
+                    line-height: 1.2;
+                    margin-bottom: 0.5em;
                 }
 
-                /* Fixed positioned footer */
+                /* Print-optimized footer elements */
                 .footer-protocol {
-                    position: fixed;
-                    bottom: 5mm;
-                    left: 10mm;
+                    position: running(footer-left);
                     font-size: 16px;
                     font-weight: normal;
                     font-family: 'Times New Roman', Times, serif;
-                    z-index: 1000;
                 }
                 
                 .footer-erc {
-                    position: fixed;
-                    bottom: 5mm;
-                    right: 10mm;
+                    position: running(footer-right);
                     font-size: 16px;
                     font-weight: bold;
                     font-family: 'Times New Roman', Times, serif;
-                    z-index: 1000;
                 }
                 
-                /* Disclaimer positioned 81mm from the bottom */
-                .disclaimer-section {
-                    position: absolute;
-                    bottom: 60mm; /* 81 mm from bottom of page */
-                    left: 10mm;   /* optional left margin */
-                    right: 10mm;  /* optional right margin */
-                    line-height: 1.2;
-                    page-break-inside: avoid;
-                    break-inside: avoid;
-                }
-
-                /* Signatures positioned below the disclaimer, up to bottom of page */
-                .signatures-section {
-                    position: absolute;
-                    bottom: 12mm;  /* distance from bottom of page */
-                    left: 10mm;   /* align with left margin */
-                    right: 10mm;  /* align with right margin */
-                    top: auto;    /* will occupy space between bottom and disclaimer */
-                    page-break-inside: avoid;
-                    break-inside: avoid;
+                /* Fallback for browsers that don't support running() */
+                @supports not (position: running(header-left)) {
+                    .header-logo-left {
+                        position: fixed;
+                        top: 2mm;
+                        left: 10mm;
+                        z-index: 1000;
+                    }
+                    
+                    .header-logo-right {
+                        position: fixed;
+                        top: 2mm;
+                        right: 10mm;
+                        z-index: 1000;
+                    }
+                    
+                    .protocol-header {
+                        position: fixed;
+                        top: 19mm;
+                        left: 10mm;
+                        right: 10mm;
+                        z-index: 1000;
+                        margin: 0;
+                    }
+                    
+                    .footer-protocol {
+                        position: fixed;
+                        bottom: 5mm;
+                        left: 10mm;
+                        z-index: 1000;
+                    }
+                    
+                    .footer-erc {
+                        position: fixed;
+                        bottom: 5mm;
+                        right: 10mm;
+                        z-index: 1000;
+                    }
                 }
                 
-                /* Main content container - flows naturally */
-                .page-content {
-                    padding: 39mm 10mm 20mm 10mm; /* top, right, bottom, left */
-                    min-height: calc(100vh - 50mm); /* Adjust for header and footer space */
-                }
-                
-                /* Content sections - natural flow */
-                .content-section {
+                /* Main content flow */
+                .main-content {
                     margin-bottom: 20px;
                 }
                 
-                .content-section:last-child {
-                    margin-bottom: 0;
+                .content-section {
+                    margin-bottom: 20px;
+                    page-break-inside: avoid;
                 }
                 
-                /* Bottom sections that should appear at the end */
-                .bottom-section {
-                    margin-top: auto;
+                /* Print-optimized table handling */
+                table {
+                    border-collapse: collapse !important;
+                    page-break-inside: auto;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
                 }
                 
-                @media print {
-                    body {
-                        margin: 0;
-                        padding: 0;
-                    }
-                    
-                    /* Ensure disclaimer and signatures appear at bottom and don't break awkwardly */
+                .antibiogram-section {
+                    page-break-inside: avoid;
+                    margin-bottom: 15px;
+                    break-inside: avoid;
+                }
+                
+                .antibiogram-table {
+                    page-break-inside: auto;
+                    width: 100% !important;
+                }
+                
+                .antibiogram-table thead {
+                    display: table-header-group;
+                    page-break-after: avoid;
+                    break-after: avoid;
+                }
+                
+                .antibiogram-table tbody {
+                    display: table-row-group;
+                }
+                
+                .antibiogram-table tr {
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+                
+                .antibiogram-table th,
+                .antibiogram-table td {
+                    page-break-inside: avoid;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                
+                /* Bottom sections - positioned exactly 60mm from bottom of LAST page only */
+                .disclaimer-section {
+                    position: fixed;
+                    bottom: 60mm;
+                    left: 10mm;
+                    right: 10mm;
+                    z-index: 999;
+                    page: :last; /* Only appears on last page */
+                }
+                
+                .signatures-section {
+                    position: fixed;
+                    bottom: 12mm; /* 5mm footer + 7mm spacing */
+                    left: 10mm;
+                    right: 10mm;
+                    z-index: 999;
+                    page: :last; /* Only appears on last page */
+                }
+                
+                /* Alternative approach for browsers that don't support page selector */
+                @supports not (page: :last) {
                     .disclaimer-section,
                     .signatures-section {
+                        position: static;
+                    }
+                    
+                    .bottom-sections {
+                        position: fixed;
+                        bottom: 60mm;
+                        left: 10mm;
+                        right: 10mm;
+                        z-index: 999;
+                        page-break-before: always; /* Force to new page */
+                    }
+                    
+                    .signatures-section-fallback {
+                        position: fixed;
+                        bottom: 12mm;
+                        left: 10mm;
+                        right: 10mm;
+                        z-index: 999;
+                    }
+                }
+                
+                /* Ensure bottom sections don't appear in content flow */
+                .bottom-sections {
+                    display: none; /* Hide since we're using fixed positioning on last page */
+                }
+                
+                /* Print-specific optimizations */
+                @media print {
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    
+                    body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: white !important;
+                        color: black !important;
+                    }
+                    
+                    /* Force disclaimer and signatures to last page only */
+                    .disclaimer-section {
+                        position: fixed !important;
+                        bottom: 60mm !important;
+                        left: 10mm !important;
+                        right: 10mm !important;
+                        z-index: 999 !important;
+                    }
+                    
+                    .signatures-section {
+                        position: fixed !important;
+                        bottom: 12mm !important;
+                        left: 10mm !important;
+                        right: 10mm !important;
+                        top: auto !important;
+                        z-index: 999 !important;
+                    }
+                    
+                    /* Ensure they only appear on the last page */
+                    @page :not(:last) {
+                        .disclaimer-section,
+                        .signatures-section {
+                            display: none !important;
+                        }
+                    }
+                    
+                    /* Alternative method: Use JavaScript-based approach for last page detection */
+                    .last-page-only {
+                        display: none;
+                    }
+                    
+                    /* Show on last page */
+                    body:last-child .last-page-only,
+                    .page:last-child .last-page-only {
+                        display: block !important;
+                    }
+                    
+                    /* Optimize page breaks */
+                    h1, h2, h3, h4, h5, h6 {
+                        page-break-after: avoid;
+                        break-after: avoid;
                         page-break-inside: avoid;
                         break-inside: avoid;
                     }
                     
-                    /* Keep disclaimer and signatures together at the end */
-                    .bottom-sections {
+                    p, div {
                         page-break-inside: avoid;
                         break-inside: avoid;
-                        page-break-before: avoid;
+                        orphans: 3;
+                        widows: 3;
                     }
                     
-                    /* Push disclaimer and signatures to bottom if there's space */
-                    .page-content {
-                        display: flex;
-                        flex-direction: column;
-                        min-height: calc(100vh - 85mm);
+                    /* Enhanced table printing */
+                    table {
+                        page-break-inside: auto !important;
+                        border-collapse: collapse !important;
                     }
                     
-                    .content-sections {
-                        flex: 1;
+                    thead {
+                        display: table-header-group !important;
                     }
                     
-                    .bottom-sections {
-                        margin-top: auto;
-                        flex-shrink: 0;
+                    tbody {
+                        display: table-row-group !important;
+                    }
+                    
+                    tr {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                    }
+                    
+                    /* Prevent content from overlapping with fixed elements */
+                    .main-content {
+                        margin-top: 0 !important;
+                        padding-top: 0 !important;
+                    }
+                    
+                    /* Remove any shadows, transitions, or effects */
+                    * {
+                        box-shadow: none !important;
+                        text-shadow: none !important;
+                        transition: none !important;
+                        transform: none !important;
                     }
                 }
             </style>
@@ -1158,29 +1315,26 @@ const ReportDetail = () => {
             <div class="footer-protocol">Protocol No: PR-24111</div>
             <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
             
-            <!-- Main content that flows naturally -->
-            <div class="page-content">
-                <div class="content-sections">
-                    <div class="content-section">
-                        ${patientSpecimen}
-                    </div>
-                    
-                    <div class="content-section">
-                        ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
-                        ${mode !== 'neg' ? antibiogramTables() : ''}
-                    </div>
+            <!-- Fixed positioned disclaimer and signatures - ONLY on last page, 60mm from bottom -->
+            <div class="disclaimer-section last-page-only">
+                ${disclaimer}
+            </div>
+            
+            <div class="signatures-section last-page-only">
+                ${signatures}
+            </div>
+            
+            <!-- Main flowing content -->
+            <div class="main-content">
+                <div class="content-section">
+                    ${patientSpecimen}
                 </div>
                 
-                <!-- Bottom sections - will appear at end of content flow -->
-                <div class="bottom-sections">
-                    <div class="disclaimer-section">
-                        ${disclaimer}
-                    </div>
-                    
-                    <div class="signatures-section">
-                        ${signatures}
-                    </div>
+                <div class="content-section">
+                    ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
                 </div>
+                
+                ${mode !== 'neg' ? `<div class="content-section">${antibiogramTables()}</div>` : ''}
             </div>
         </body>
     </html>`;
