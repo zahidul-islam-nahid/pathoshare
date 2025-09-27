@@ -1068,7 +1068,7 @@ const ReportDetail = () => {
                 /* Disclaimer positioned 81mm from the bottom */
                 .disclaimer-section {
                     position: absolute;
-                    bottom: 81mm; /* 81 mm from bottom of page */
+                    bottom: 70mm; /* 81 mm from bottom of page */
                     left: 10mm;   /* optional left margin */
                     right: 10mm;  /* optional right margin */
                     line-height: 1.2;
@@ -1079,7 +1079,7 @@ const ReportDetail = () => {
                 /* Signatures positioned below the disclaimer, up to bottom of page */
                 .signatures-section {
                     position: absolute;
-                    bottom: 5mm;  /* distance from bottom of page */
+                    bottom: 12mm;  /* distance from bottom of page */
                     left: 10mm;   /* align with left margin */
                     right: 10mm;  /* align with right margin */
                     top: auto;    /* will occupy space between bottom and disclaimer */
