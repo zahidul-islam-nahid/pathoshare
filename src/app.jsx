@@ -1065,16 +1065,24 @@ const ReportDetail = () => {
                     z-index: 1000;
                 }
                 
-                /* Fixed positioned disclaimer - appears at bottom of page */
+                /* Disclaimer positioned 81mm from the bottom */
                 .disclaimer-section {
-                    margin-top: 40px;
+                    position: absolute;
+                    bottom: 81mm; /* 81 mm from bottom of page */
+                    left: 10mm;   /* optional left margin */
+                    right: 10mm;  /* optional right margin */
+                    line-height: 1.2;
                     page-break-inside: avoid;
                     break-inside: avoid;
                 }
-                
-                /* Fixed positioned signatures - appears at bottom of page */
+
+                /* Signatures positioned below the disclaimer, up to bottom of page */
                 .signatures-section {
-                    margin-top: 20px;
+                    position: absolute;
+                    bottom: 5mm;  /* distance from bottom of page */
+                    left: 10mm;   /* align with left margin */
+                    right: 10mm;  /* align with right margin */
+                    top: auto;    /* will occupy space between bottom and disclaimer */
                     page-break-inside: avoid;
                     break-inside: avoid;
                 }
