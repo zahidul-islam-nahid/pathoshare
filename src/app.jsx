@@ -871,7 +871,7 @@ const ReportDetail = () => {
         <div>
             <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
             <p style="font-size:16px; margin:0; line-height:1.15;">
-                No organism isolated in aerobic and microaerophilic condition at 35±2°C.
+                No organism isolated in aerobic condition at 35±2°C.
             </p>
         </div>
     `;
