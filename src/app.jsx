@@ -870,7 +870,7 @@ const ReportDetail = () => {
     const resultNegative = `
         <div>
             <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-            <p style="font-size:16px; margin:0; line-height:1.15;">
+            <p style="font-size:12px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
         </div>
@@ -884,7 +884,7 @@ const ReportDetail = () => {
             return `
                 <div>
                     <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                    <p style="font-size:16px; margin:0; line-height:1.15;">
+                    <p style="font-size:12px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
                 </div>
@@ -993,19 +993,7 @@ const ReportDetail = () => {
             <style>
                 @page {
                     size: A4 portrait;
-                    margin: 40mm 10mm 60mm 10mm; /* top, right, bottom, left */
-                }
-                
-                @page :first {
-                    margin-bottom: 60mm; /* Reserve space for footer on first page */
-                }
-                
-                @page :last {
-                    margin-bottom: 60mm; /* Reserve space for footer on last page */
-                }
-                
-                @page :not(:first):not(:last) {
-                    margin-bottom: 10mm; /* Middle pages have smaller bottom margin */
+                    margin: 0 0 0 0; /* top, right, bottom, left */
                 }
                 
                 body {
@@ -1015,15 +1003,15 @@ const ReportDetail = () => {
                     padding: 0;
                     font-size: 16px;
                     line-height: 1.15;
-                    position: relative;
                 }
                 
-                /* Fixed positioned header elements - appear on every page */
+                /* Fixed positioned logos */
                 .header-logo-left {
                     position: fixed;
                     top: 2mm;
                     left: 10mm;
-                    height: 15mm;
+                    width: auto;
+                    height: auto;
                     z-index: 1000;
                 }
                 
@@ -1031,7 +1019,8 @@ const ReportDetail = () => {
                     position: fixed;
                     top: 2mm;
                     right: 10mm;
-                    height: 15mm;
+                    width: auto;
+                    height: auto;
                     z-index: 1000;
                 }
                 
@@ -1045,17 +1034,17 @@ const ReportDetail = () => {
                     text-align: justify;
                     font-weight: normal;
                     z-index: 1000;
-                    line-height: 1.2;
+                    word-wrap: break-word;
                 }
 
                 .protocol-header .title-line,
                 .protocol-header .pi-line {
                     display: block;
-                    line-height: 1.2;
-                    margin-bottom: 0.3em;
+                    line-height: 1;
+                    margin-bottom: 0.5em; /* Control spacing between lines */
                 }
 
-                /* Fixed positioned footer elements - appear on every page */
+                /* Fixed positioned footer */
                 .footer-protocol {
                     position: fixed;
                     bottom: 5mm;
@@ -1076,110 +1065,82 @@ const ReportDetail = () => {
                     z-index: 1000;
                 }
                 
-                /* Main content container */
-                .page-content {
-                    padding: 0;
-                    min-height: 100vh;
-                    position: relative;
+                /* Disclaimer positioned 81mm from the bottom */
+                .disclaimer-section {
+                    position: absolute;
+                    bottom: 60mm; /* 81 mm from bottom of page */
+                    left: 10mm;   /* optional left margin */
+                    right: 10mm;  /* optional right margin */
+                    line-height: 1.2;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+
+                /* Signatures positioned below the disclaimer, up to bottom of page */
+                .signatures-section {
+                    position: absolute;
+                    bottom: 12mm;  /* distance from bottom of page */
+                    left: 10mm;   /* align with left margin */
+                    right: 10mm;  /* align with right margin */
+                    top: auto;    /* will occupy space between bottom and disclaimer */
+                    page-break-inside: avoid;
+                    break-inside: avoid;
                 }
                 
-                /* Content sections */
+                /* Main content container - flows naturally */
+                .page-content {
+                    padding: 39mm 10mm 20mm 10mm; /* top, right, bottom, left */
+                    min-height: calc(100vh - 50mm); /* Adjust for header and footer space */
+                }
+                
+                /* Content sections - natural flow */
                 .content-section {
                     margin-bottom: 20px;
-                    page-break-inside: avoid;
                 }
                 
                 .content-section:last-child {
                     margin-bottom: 0;
                 }
                 
-                /* Tables that can break across pages */
-                .break-table {
-                    page-break-inside: auto;
+                /* Bottom sections that should appear at the end */
+                .bottom-section {
+                    margin-top: auto;
                 }
                 
-                .break-table tr {
-                    page-break-inside: avoid;
-                    page-break-after: auto;
-                }
-                
-                .break-table thead {
-                    display: table-header-group;
-                }
-                
-                .break-table tbody {
-                    display: table-row-group;
-                }
-                
-                /* Bottom sections that appear only at the end */
-                .bottom-sections {
-                    position: absolute;
-                    bottom: -50mm; /* Position in the footer area */
-                    left: 0;
-                    right: 0;
-                    page-break-inside: avoid;
-                }
-                
-                .disclaimer-section {
-                    margin-bottom: 15px;
-                    page-break-inside: avoid;
-                }
-
-                .signatures-section {
-                    page-break-inside: avoid;
-                }
-                
-                /* Ensure content flows properly */
-                .main-content {
-                    position: relative;
-                    z-index: 1;
-                }
-                
-                /* Print-specific styles */
                 @media print {
                     body {
                         margin: 0;
                         padding: 0;
                     }
                     
-                    .page-content {
-                        min-height: calc(100vh - 100mm); /* Account for header/footer */
-                    }
-                    
-                    /* Force the bottom sections to appear only on the last page */
-                    .bottom-sections {
-                        position: absolute;
-                        bottom: -50mm;
-                        left: 0;
-                        right: 0;
-                    }
-                    
-                    /* Prevent page breaks right after headings */
-                    h1, h2, h3, h4, h5, h6 {
-                        page-break-after: avoid;
-                    }
-                    
-                    /* Allow tables to break across pages but keep rows intact */
-                    table {
-                        page-break-inside: auto;
-                    }
-                    
-                    tr {
+                    /* Ensure disclaimer and signatures appear at bottom and don't break awkwardly */
+                    .disclaimer-section,
+                    .signatures-section {
                         page-break-inside: avoid;
-                        page-break-after: auto;
+                        break-inside: avoid;
                     }
                     
-                    thead {
-                        display: table-header-group;
+                    /* Keep disclaimer and signatures together at the end */
+                    .bottom-sections {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        page-break-before: avoid;
                     }
                     
-                    /* Ensure headers and footers appear on every page */
-                    .header-logo-left,
-                    .header-logo-right,
-                    .protocol-header,
-                    .footer-protocol,
-                    .footer-erc {
-                        position: fixed;
+                    /* Push disclaimer and signatures to bottom if there's space */
+                    .page-content {
+                        display: flex;
+                        flex-direction: column;
+                        min-height: calc(100vh - 85mm);
+                    }
+                    
+                    .content-sections {
+                        flex: 1;
+                    }
+                    
+                    .bottom-sections {
+                        margin-top: auto;
+                        flex-shrink: 0;
                     }
                 }
             </style>
@@ -1197,20 +1158,20 @@ const ReportDetail = () => {
             <div class="footer-protocol">Protocol No: PR-24111</div>
             <div class="footer-erc">ERC Approval Date: 3 February 2025</div>
             
-            <!-- Main content -->
+            <!-- Main content that flows naturally -->
             <div class="page-content">
-                <div class="main-content">
+                <div class="content-sections">
                     <div class="content-section">
                         ${patientSpecimen}
                     </div>
                     
                     <div class="content-section">
                         ${mode === 'neg' ? resultNegative : isolateHeaderLine()}
-                        ${mode !== 'neg' ? `<div class="break-table">${antibiogramTables()}</div>` : ''}
+                        ${mode !== 'neg' ? antibiogramTables() : ''}
                     </div>
                 </div>
                 
-                <!-- Bottom sections - will only appear in the footer area of the last page -->
+                <!-- Bottom sections - will appear at end of content flow -->
                 <div class="bottom-sections">
                     <div class="disclaimer-section">
                         ${disclaimer}
