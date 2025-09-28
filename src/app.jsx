@@ -1050,7 +1050,7 @@ const ReportDetail = () => {
                     bottom: 5mm;
                     left: 10mm;
                     font-size: 16px;
-                    font-weight: normal;
+                    font-weight: bold;
                     font-family: 'Times New Roman', Times, serif;
                     z-index: 1000;
                 }
