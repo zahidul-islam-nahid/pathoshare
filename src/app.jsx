@@ -870,7 +870,7 @@ const ReportDetail = () => {
     const resultNegative = `
         <div>
             <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-            <p style="font-size:12px; margin:0; line-height:1.15;">
+            <p style="font-size:16px; margin:0; line-height:1.15;">
                 No organism isolated in aerobic and microaerophilic condition at 35±2°C.
             </p>
         </div>
@@ -884,7 +884,7 @@ const ReportDetail = () => {
             return `
                 <div>
                     <p style="font-size:16px; margin:0 0 6px 0; font-weight:bold; line-height:1.15;">Results:</p>
-                    <p style="font-size:12px; margin:0; line-height:1.15;">
+                    <p style="font-size:16px; margin:0; line-height:1.15;">
                         ${name ? `<i>${name}</i> ` : ''}isolated in aerobic condition at 35±2°C.
                     </p>
                 </div>
